@@ -179,10 +179,7 @@ export function FileInput({
   const removeFile = (id: string) => {
     if (uploading) return;
     const nextItems = itemsRef.current.filter((item) => item.id !== id);
-    updateItems(
-      () => nextItems,
-      true,
-    );
+    updateItems(() => nextItems, true);
     if (nextItems.length === 0) setCurrentStep(1);
   };
 
