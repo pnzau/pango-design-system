@@ -22,6 +22,14 @@ The preview app is the documentation experience. It has pages for each sidebar s
 
 `NumberInput` is a text-based numeric control with `inputMode="decimal"`. It formats the displayed value using the active or supplied locale, returns a raw number through `onValueChange`, and supports min, max, step, disabled, loading, validation, and accessible field messaging.
 
+`PhoneInput` is an opt-in lazy entry point. Import it from `pango-design-system/phone` when a page needs phone formatting; the `libphonenumber-js` metadata loads on first focus and is not part of the core or forms entries.
+
+```tsx
+import { PhoneInput } from 'pango-design-system/phone'
+
+<PhoneInput defaultCountry="KE" label="Phone number" onValueChange={setPhone} />
+```
+
 ## Package entry points
 
 Import Pango styles once from the application boundary, then use the smallest entry point that fits the page.
@@ -39,6 +47,7 @@ import { DataTable } from 'pango-design-system/table'
 | `/styles.css` | Fonts, semantic theme tokens, responsive rules, component styles, and reduced-motion defaults. |
 | `/tokens` and `/motion` | Shared control sizes, tone names, timing values, and opt-in Motion exports. |
 | `/forms` | Field composition, combobox, multi-select, date controls, number input, TanStack Form, and Zod. |
+| `/phone` | Opt-in, lazy-formatted phone input backed by `libphonenumber-js`. |
 | `/patterns` | Page headers, filters, settings, command palette, list-detail layouts, empty/loading/error states, and responsive navigation. |
 | `/table` and `/virtual` | Semantic tables, TanStack Table adapter, virtual lists, grids, and virtual data table. |
 | `/dnd` | Draggable, droppable, sortable-list, sortable-grid, drag-handle, and drag overlay primitives. |
