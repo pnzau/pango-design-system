@@ -1,0 +1,45 @@
+<!-- @dsCard group="Components" viewport="760x470" name="Pickers & figures" subtitle="Dropdown variants, DatePicker, MonthPicker, NumberInput" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-app);font-family:var(--font-body);color:var(--text-body)}#root{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.col{display:flex;flex-direction:column;gap:14px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const { Dropdown, DatePicker, MonthPicker, NumberInput, EyebrowLabel, Card } = window.PangoDesignSystem_86a349;
+const PAL = ['var(--cat-1)','var(--cat-2)','var(--cat-3)','var(--cat-4)','var(--cat-5)','var(--cat-6)'];
+const Field = ({ label, children }) => <div><EyebrowLabel style={{marginBottom:7,display:'block'}}>{label}</EyebrowLabel>{children}</div>;
+function Demo(){
+  const [team,setTeam]=React.useState('design');
+  const [owner,setOwner]=React.useState('');
+  const [cat,setCat]=React.useState('');
+  const [day,setDay]=React.useState('2026-09-18');
+  const [month,setMonth]=React.useState('2026-09');
+  const [amount,setAmount]=React.useState('1250.50');
+  const [qty,setQty]=React.useState('24');
+  const [cats,setCats]=React.useState([{value:'onsite',label:'On-site',color:'var(--cat-1)'},{value:'remote',label:'Remote',color:'var(--cat-4)'}]);
+  return <React.Fragment>
+    <Card padding={16}><div className="col">
+      <Field label="SWATCHED">
+        <Dropdown value={cat} options={cats} onSelect={setCat} placeholder="Select mode…" colorPalette={PAL}
+          onCreate={(name,color)=>{setCats(c=>[...c,{value:name,label:name,color}])}} createLabel="Add mode"/>
+      </Field>
+      <Field label="CLEARABLE">
+        <Dropdown clearable value={owner} onSelect={setOwner} placeholder="Unassigned"
+          options={[{value:'ak',label:'A. Kamau'},{value:'jm',label:'J. Mwangi'},{value:'lw',label:'L. Wanjiru'}]}/>
+      </Field>
+      <Field label="WITH FOOTER ACTION">
+        <Dropdown value={team} onSelect={setTeam} footerLabel="Manage teams…"
+          options={[{value:'design',label:'Design'},{value:'eng',label:'Engineering'},{value:'ops',label:'Operations'}]}/>
+      </Field>
+    </div></Card>
+    <Card padding={16}><div className="col">
+      <Field label="DATE"><DatePicker value={day} onChange={setDay}/></Field>
+      <Field label="PERIOD"><MonthPicker value={month} onChange={setMonth}/></Field>
+      <Field label="AMOUNT"><NumberInput value={amount} onChange={setAmount} prefix="EUR" align="right"/></Field>
+      <Field label="QUANTITY"><NumberInput value={qty} onChange={setQty} suffix="units"/></Field>
+    </div></Card>
+  </React.Fragment>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

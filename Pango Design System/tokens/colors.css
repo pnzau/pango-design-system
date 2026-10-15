@@ -1,0 +1,129 @@
+/* Pango color system. Base palette first, then the domain-neutral semantic
+   layer every component reads. Nothing below the palette names a product
+   concept — "success" not "paid", "accent" not "green" — so the same tokens
+   serve a rental ledger, a clinic queue or a logistics board. Dark values
+   live in tokens/dark.css and remap only this semantic layer. */
+:root{
+  color-scheme:light;
+
+  /* ── Brand ── */
+  --pango-green:#0a8f5b;          /* the accent: primary buttons, active states, brand bar 1 */
+  --pango-green-deep:#0a7d50;     /* text on pale green fills */
+  --pango-green-tint:#e9f7ef;     /* pale green fill */
+  --pango-green-line:#c3e6d1;     /* pale green border */
+
+  /* Accent alternates — swap --accent to re-theme a whole product */
+  --accent-blue:#1466d6;
+  --accent-violet:#6b2fd6;
+  --accent-vermilion:#e0452a;
+
+  /* ── Ink (near-black, never pure #000 except the logo tile) ── */
+  --ink:#0e0e0e;
+  --ink-2:#1c1c1c;
+  --ink-3:#1f1f1f;
+  --black:#000;
+
+  /* ── Neutral greys, light → dark ── */
+  --grey-50:#fafafa;
+  --grey-100:#f6f6f4;
+  --grey-150:#f5f5f3;
+  --grey-200:#f4f4f3;
+  --grey-250:#f3f3f1;
+  --grey-300:#f1f1ef;
+  --grey-350:#f0f0ee;
+  --grey-400:#ececea;
+  --grey-450:#e6e6e4;
+  --grey-500:#e0e0de;
+  --grey-550:#dcdcda;
+  --grey-600:#d6d6d4;
+  --grey-650:#cfcfcf;
+  --grey-700:#b0b0b0;
+  --grey-750:#a8a8a8;
+  --grey-800:#a0a0a0;
+  --grey-850:#9a9a9a;
+  --grey-900:#8a8a8a;
+  --grey-950:#7a7a7a;
+  --grey-1000:#6a6a6a;
+  --grey-1050:#5f5f5f;
+  --grey-1100:#4a4a4a;
+
+  /* ── Semantic status: five tones, each a dot colour, a text tone, a pale
+        fill and a pale border. Status is never a saturated block. ── */
+  --success:#0a8f5b;   --success-fg:#0a7d50;  --success-bg:#e9f7ef;  --success-line:#c3e6d1;
+  --warning:#d98a00;   --warning-fg:#9a6b00;  --warning-bg:#fdf6e8;  --warning-line:#f0dca6;
+  --danger:#d1382c;    --danger-fg:#b32a20;   --danger-bg:#fbecea;   --danger-line:#f1c5c0;
+  --info:#1466d6;      --info-fg:#1466d6;     --info-bg:#eaf1fd;     --info-line:#cfe0f8;
+  --slate:#3a4a63;     --slate-fg:#3a4a63;    --slate-bg:#eef2f7;    --slate-line:#dbe3ee;
+  --neutral:#7a7a7a;   --neutral-fg:#7a7a7a;  --neutral-bg:#f1f1ef;  --neutral-line:#e6e6e4;
+  /* the sixth state is absence — an empty slot is a dashed outline, no fill */
+  --empty:#9a9a9a;     --empty-fg:#8a8a8a;    --empty-bg:#fafafa;    --empty-line:#e6e6e4;
+  --error-text:#c0392b;
+
+  /* Money direction — positive / negative figures in a ledger */
+  --money-in:var(--success);
+  --money-out:var(--danger-fg);
+
+  /* ── Domain aliases (kept so existing product code keeps working) ── */
+  --paid:var(--success);    --paid-fg:var(--success-fg);    --paid-bg:var(--success-bg);    --paid-line:var(--success-line);
+  --soon:var(--warning);    --soon-fg:var(--warning-fg);    --soon-bg:var(--warning-bg);    --soon-line:var(--warning-line);
+  --overdue:var(--danger);  --overdue-fg:var(--danger-fg);  --overdue-bg:var(--danger-bg);  --overdue-line:var(--danger-line);
+  --neutral-chip:var(--neutral-fg); --neutral-chip-bg:var(--neutral-bg);
+
+  /* ── Categorical palette: eight fixed hues for taxonomies the product
+        doesn't control (categories, teams, tags, chart series). Hash a
+        user-typed label onto an index; never invent a ninth hue. ── */
+  --cat-1:#1466d6;   /* blue */
+  --cat-2:#d98a00;   /* amber */
+  --cat-3:#6b2fd6;   /* violet */
+  --cat-4:#0a8f5b;   /* green */
+  --cat-5:#b32a20;   /* red */
+  --cat-6:#3a4a63;   /* slate */
+  --cat-7:#9a6b00;   /* ochre */
+  --cat-8:#1b8a8a;   /* teal */
+
+  /* ── Third-party brand ── */
+  --whatsapp:#25d366;
+  --instagram:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); /* @kind color */
+
+  /* ── Semantic aliases ── */
+  --accent:var(--pango-green);
+  --accent-fg:#fff;
+  --accent-tint:var(--pango-green-tint);
+  --accent-line:var(--pango-green-line);
+
+  --surface-app:var(--grey-200);       /* page background */
+  --surface-card:#fff;                 /* every card, sidebar, sheet */
+  --surface-inset:var(--grey-50);      /* nested panel inside a card */
+  --surface-chip:var(--grey-250);      /* chips, segmented track, active nav */
+  --surface-chip-soft:var(--grey-150);
+  --surface-hover:var(--grey-100);
+  --surface-popover:#fff;              /* menus, date grids, floating cards */
+  --surface-dark:var(--ink);
+  --surface-dark-gradient:linear-gradient(120deg,#0e0e0e,#1f1f1f); /* @kind color */
+  --surface-auth-gradient:linear-gradient(150deg,#0e0e0e,#1c1c1c); /* @kind color */
+
+  --border-card:var(--grey-400);       /* 1px card outline */
+  --border-control:var(--grey-450);    /* inputs, selects, quiet buttons */
+  --border-strong:var(--grey-600);     /* secondary button outline */
+  --border-inset:var(--grey-350);      /* dividers, inset panels */
+  --border-focus:var(--ink);           /* focus is an ink border, never a glow */
+  --border-dashed:var(--grey-650);     /* empty slot outline */
+  --border-dashed-vacant:var(--border-dashed);
+
+  --text-body:var(--ink);
+  --text-secondary:var(--grey-1050);
+  --text-muted:var(--grey-900);
+  --text-faint:var(--grey-850);
+  --text-label:var(--grey-800);        /* uppercase eyebrow labels */
+  --text-placeholder:#aaa;
+  --text-on-dark:#fff;
+  --text-on-dark-body:#c5c5c5;
+  --text-on-dark-muted:#9a9a9a;
+
+  --overlay-scrim:rgba(14,14,14,.45);
+  --header-veil:rgba(244,244,243,.86);
+  --glass-fill:rgba(255,255,255,.14);
+  --glass-fill-strong:rgba(255,255,255,.16);
+  --glass-line:rgba(255,255,255,.22);
+  --photo-scrim:linear-gradient(180deg,rgba(14,14,14,.15) 0%,rgba(14,14,14,.35) 45%,rgba(14,14,14,.92) 100%); /* @kind color */
+}

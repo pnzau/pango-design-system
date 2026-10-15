@@ -1,0 +1,29 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Status, tags & stats" subtitle="Status chips, category tags, badges, KPI tiles, money" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-app);font-family:var(--font-body);color:var(--text-body)}#root{padding:16px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:10px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const { StatusChip, STATUS, Tag, Badge, StatCard, Money, ProgressBar } = window.PangoDesignSystem_86a349;
+const CAT = { Plumbing:'var(--cat-1)', Electrical:'var(--cat-2)', Painting:'var(--cat-3)', General:'var(--cat-4)', Roofing:'var(--cat-5)', Locksmith:'var(--cat-6)' };
+const categoryTone = c => CAT[c] || 'var(--cat-8)';
+function Demo(){return <div className="col" style={{gap:14}}>
+  <div className="row" style={{gap:7}}>{Object.keys(STATUS).map(s=><StatusChip key={s} status={s}/>)}</div>
+  <div className="row" style={{gap:7}}>{['Plumbing','Electrical','Painting','Roofing','Carpentry'].map(c=><Tag key={c} tone={categoryTone(c)} size="xs">{c}</Tag>)}<Tag>Borehole water</Tag><Tag>Backup generator</Tag><Tag size="sm">Rent</Tag></div>
+  <div className="row"><Badge>11</Badge><Badge variant="countAccent">3</Badge><Badge variant="flag">AI</Badge><span style={{background:'var(--ink)',padding:'6px 8px',borderRadius:8}}><Badge variant="live">LIVE</Badge></span><Badge variant="pill">Available now</Badge><Badge variant="pillMono">2</Badge></div>
+  <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:14}}>
+    <StatCard label="Total units" value="30" trend="26 occupied" trendColor="var(--paid)"/>
+    <StatCard label="Occupancy" value="87%" trend="4 vacant"/>
+    <StatCard label="Unpaid Rent" value="KES 390,850" trend="5 unpaid tenants" trendColor="var(--overdue-fg)" valueColor="var(--overdue-fg)"/>
+  </div>
+  <div style={{background:'var(--ink)',borderRadius:'var(--r-16)',padding:18,color:'#fff'}}>
+    <div style={{fontSize:'var(--fs-11-5)',color:'var(--text-on-dark-muted)',fontWeight:600}}>Selected total</div>
+    <Money value="KES 53,500" size="var(--fs-30)" style={{fontFamily:'var(--font-display)',letterSpacing:'var(--ls-display-lg)'}}/>
+    <ProgressBar value={62} style={{marginTop:12}}/>
+  </div>
+</div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

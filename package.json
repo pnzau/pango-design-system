@@ -1,0 +1,92 @@
+{
+  "name": "pango-design-system",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist-lib",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:library": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "preview": "vite preview"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist-lib/index.d.ts",
+      "import": "./dist-lib/index.js"
+    },
+    "./styles": {
+      "types": "./dist-lib/styles.d.ts",
+      "import": "./dist-lib/styles.js"
+    },
+    "./styles.css": "./dist-lib/styles.css",
+    "./tokens": {
+      "types": "./dist-lib/tokens.d.ts",
+      "import": "./dist-lib/tokens.js"
+    },
+    "./forms": {
+      "types": "./dist-lib/forms.d.ts",
+      "import": "./dist-lib/forms.js"
+    },
+    "./patterns": {
+      "types": "./dist-lib/patterns.d.ts",
+      "import": "./dist-lib/patterns.js"
+    },
+    "./table": {
+      "types": "./dist-lib/table.d.ts",
+      "import": "./dist-lib/table.js"
+    },
+    "./virtual": {
+      "types": "./dist-lib/virtual.d.ts",
+      "import": "./dist-lib/virtual.js"
+    },
+    "./dnd": {
+      "types": "./dist-lib/dnd.d.ts",
+      "import": "./dist-lib/dnd.js"
+    },
+    "./charts": {
+      "types": "./dist-lib/charts.d.ts",
+      "import": "./dist-lib/charts.js"
+    },
+    "./hotkeys": {
+      "types": "./dist-lib/hotkeys.d.ts",
+      "import": "./dist-lib/hotkeys.js"
+    },
+    "./motion": {
+      "types": "./dist-lib/motion.d.ts",
+      "import": "./dist-lib/motion.js"
+    }
+  },
+  "dependencies": {
+    "@dnd-kit/helpers": "^0.5.0",
+    "@dnd-kit/react": "^0.5.0",
+    "@tanstack/charts": "^1.0.0",
+    "@tanstack/react-form": "^1.33.5",
+    "@tanstack/react-hotkeys": "^0.13.0",
+    "@tanstack/react-table": "^9.2.6",
+    "@tanstack/react-virtual": "^3.14.13",
+    "lucide-react": "^0.468.0",
+    "motion": "^12.23.24",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^9.1.20",
+    "@storybook/react-vite": "^9.1.20",
+    "@tailwindcss/vite": "^4.1.14",
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.4",
+    "storybook": "^9.1.20",
+    "tailwindcss": "^4.1.14",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7"
+  }
+}

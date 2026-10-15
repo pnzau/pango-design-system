@@ -1,0 +1,24 @@
+/* Pango corner radii. Nothing is sharp; nothing is a full pill except badges. */
+:root{
+  --r-2:2px;    /* logo bars */
+  --r-4:4px;    /* legend swatch */
+  --r-5:5px;    /* unit dot, LIVE badge */
+  --r-6:6px;    /* micro tag */
+  --r-7:7px;    /* count badge, type chip */
+  --r-8:8px;    /* small button, segmented thumb */
+  --r-9:9px;    /* quiet button, select */
+  --r-10:10px;  /* nav item, primary button, input */
+  --r-11:11px;  /* icon tile, auth input, wide button */
+  --r-12:12px;  /* inset panel */
+  --r-13:13px;  /* logo tile (large) */
+  --r-14:14px;  /* stat card */
+  --r-16:16px;  /* card */
+  --r-18:18px;  /* large panel, desktop modal */
+  --r-20:20px;  /* bottom-sheet top corners, pill badge */
+  --r-pill:20px;
+  --r-round:50%;
+
+  --r-card:var(--r-16);
+  --r-control:var(--r-10);
+  --r-sheet:20px 20px 0 0; /* @kind radius */
+}

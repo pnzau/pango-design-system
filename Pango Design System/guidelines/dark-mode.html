@@ -1,0 +1,50 @@
+<!-- @dsCard group="Foundations" viewport="900x520" name="Dark mode" subtitle="What the dark theme remaps, and the one rule it enforces" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;background:var(--surface-app);color:var(--text-body);font-family:var(--font-body)}
+.wrap{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{border:1px solid var(--border-card);border-radius:var(--r-16);padding:18px;background:var(--surface-card)}
+h2{font:var(--text-section-title);margin:0 0 4px}
+.note{font-size:var(--fs-12);color:var(--text-muted);line-height:var(--lh-body);margin:0 0 14px}
+.pairs{display:grid;grid-template-columns:1fr;gap:6px}
+.pair{display:grid;grid-template-columns:1fr 26px 26px;align-items:center;gap:8px;font-family:var(--font-mono);font-size:var(--fs-11);color:var(--text-secondary)}
+.sw{height:22px;border-radius:6px;border:1px solid var(--border-inset)}
+.hdr{display:grid;grid-template-columns:1fr 26px 26px;gap:8px;font-size:var(--fs-9-5);font-weight:700;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--text-label);margin-bottom:6px}
+.hdr span:not(:first-child){text-align:center}
+.rule{font-size:var(--fs-13);line-height:var(--lh-prose);color:var(--text-secondary);margin:0 0 10px}
+code{font-family:var(--font-mono);font-size:var(--fs-12);background:var(--surface-chip);border-radius:5px;padding:1px 5px;color:var(--text-body)}
+.demo{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.chip{font-size:var(--fs-11);font-weight:700;border-radius:var(--r-7);padding:var(--pad-badge)}
+.btn{height:36px;padding:0 16px;border-radius:var(--r-10);border:none;background:var(--accent);color:var(--accent-fg);font:var(--text-button);font-family:var(--font-body)}
+.dark{background:#0e0e0e}
+</style></head><body>
+<div class="wrap">
+  <div class="panel">
+    <h2>What switches</h2>
+    <p class="note">Set <code>data-theme="dark"</code> on <code>&lt;html&gt;</code>. The grey ramp and brand palette keep their light values; only the semantic layer is remapped.</p>
+    <div class="hdr"><span>Token</span><span>L</span><span>D</span></div>
+    <div class="pairs" id="pairs"></div>
+  </div>
+  <div class="panel">
+    <h2>The one rule</h2>
+    <p class="rule">A component is dark-correct because it reads tokens. A component that hardcodes a hex is the only thing dark mode breaks — so <code>#fff</code> becomes <code>var(--surface-card)</code>, <code>#0e0e0e</code> becomes <code>var(--text-body)</code>, and a status colour is always <code>var(--success-bg)</code>, never <code>#e9f7ef</code>.</p>
+    <p class="rule">Two deliberate differences from the light theme: the accent lightens to <code>#12b673</code> with an ink foreground, because white on the light green fails contrast on a dark ground; and surfaces step <em>up</em> from the page rather than down, so a card still reads as above its background.</p>
+    <p class="rule">No component takes a <code>dark</code> prop. There is no second set of components.</p>
+    <div id="demos"></div>
+  </div>
+</div>
+<script>
+const PAIRS = [['--surface-app','#f4f4f3','#0e0e0e'],['--surface-card','#ffffff','#171717'],['--surface-inset','#fafafa','#1c1c1c'],['--surface-chip','#f3f3f1','#252525'],['--surface-popover','#ffffff','#1e1e1e'],['--border-card','#ececea','#262626'],['--border-control','#e6e6e4','#303030'],['--border-focus','#0e0e0e','#f2f2f0'],['--text-body','#0e0e0e','#f2f2f0'],['--text-secondary','#5f5f5f','#b4b4b0'],['--text-muted','#8a8a8a','#909089'],['--accent','#0a8f5b','#12b673'],['--success-bg','#e9f7ef','#10281e'],['--warning-bg','#fdf6e8','#2a2113'],['--danger-bg','#fbecea','#2b1715']];
+document.getElementById('pairs').innerHTML = PAIRS.map(([t,l,d]) =>
+  `<div class="pair"><span>${t}</span><span class="sw" style="background:${l}"></span><span class="sw" style="background:${d}"></span></div>`).join('');
+const demo = theme => `<div ${theme==='dark'?'data-theme="dark"':''} style="background:var(--surface-app);border:1px solid var(--border-card);border-radius:var(--r-12);padding:14px;margin-top:12px">
+  <div style="font:var(--text-eyebrow);font-family:var(--font-body);letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--text-label);margin-bottom:10px">${theme}</div>
+  <div class="demo" style="margin:0">
+    <button class="btn">Primary</button>
+    <span class="chip" style="color:var(--success-fg);background:var(--success-bg)">Approved</span>
+    <span class="chip" style="color:var(--warning-fg);background:var(--warning-bg)">Pending</span>
+    <span class="chip" style="color:var(--danger-fg);background:var(--danger-bg)">Rejected</span>
+    <span style="font-family:var(--font-mono);font-weight:700;color:var(--text-body)">1,250.50</span>
+  </div></div>`;
+document.getElementById('demos').innerHTML = demo('light') + demo('dark');
+</script></body></html>

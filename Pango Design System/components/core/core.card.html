@@ -1,0 +1,20 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Buttons & icons" subtitle="Primary, secondary, quiet, ghost; icon buttons; the icon set" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-app);font-family:var(--font-body);color:var(--text-body)}#root{padding:16px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:10px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const DS = window.PangoDesignSystem_86a349;
+const { Button, IconButton, Icon } = DS;
+const iconNames = DS.IconNames || ['properties','invoice','repairs','vacancies','managers','insights','search','plus','edit','trash','chevronDown','check','wrench','bell','user','settings','share','download','whatsapp','sparkle','trendUp','trendDown'];
+function Demo(){return <div className="col" style={{gap:16}}>
+  <div className="row"><Button>Add property</Button><Button variant="secondary">Today</Button><Button variant="quiet" size="sm" icon={<Icon name="edit" size={14} strokeWidth={2}/>}>Edit property</Button><Button variant="primary" size="sm">Confirm</Button><Button disabled>Disabled</Button></div>
+  <div className="row" style={{background:'var(--surface-dark-gradient)',borderRadius:'var(--r-16)',padding:14}}><Button variant="ghost">Full insights →</Button><Button size="sm">Log a repair</Button></div>
+  <div className="row"><Button size="wide" style={{width:220}}>Save repair</Button><IconButton title="Sign out"><Icon name="logout" size={15} strokeWidth={1.9}/></IconButton><IconButton size={38}><Icon name="menu" size={19} strokeWidth={2}/></IconButton><IconButton variant="plain"><Icon name="chevronLeft" size={16} strokeWidth={2.2}/></IconButton></div>
+  <div className="row" style={{gap:14,color:'var(--text-secondary)'}}>{iconNames.map(n=><span key={n} title={n} style={{display:'flex'}}><Icon name={n} size={19}/></span>)}</div>
+</div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

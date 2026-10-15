@@ -1,0 +1,33 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Sheet" subtitle="Desktop modal and mobile bottom sheet" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-app);font-family:var(--font-body);color:var(--text-body)}#root{padding:16px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.col{display:flex;flex-direction:column;gap:10px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const { Sheet, Button, EyebrowLabel, Input, Select } = window.PangoDesignSystem_86a349;
+function Demo(){return <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:18,alignItems:'start'}}>
+  <div style={{position:'relative',height:300,background:'var(--surface-chip)',borderRadius:'var(--r-16)',overflow:'hidden'}}>
+    <div style={{position:'absolute',inset:0,background:'var(--overlay-scrim)',backdropFilter:'var(--blur-scrim)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div style={{width:340,background:'var(--surface-card)',borderRadius:'var(--r-18)',boxShadow:'var(--shadow-modal)',padding:'20px 22px'}}>
+        <div style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:'var(--fs-17)',letterSpacing:'var(--ls-display-sm)',marginBottom:14}}>Log a repair</div>
+        <EyebrowLabel style={{marginBottom:7}}>UNIT(S) REPAIRED</EyebrowLabel>
+        <Select size="lg" style={{width:'100%',marginBottom:14}} options={[{value:'c2',label:'C2 · Achieng A.'}]}/>
+        <Button size="wide" block>Save repair</Button>
+      </div>
+    </div>
+  </div>
+  <div style={{position:'relative',height:300,background:'var(--surface-chip)',borderRadius:'var(--r-16)',overflow:'hidden'}}>
+    <div style={{position:'absolute',inset:0,background:'var(--overlay-scrim)',backdropFilter:'var(--blur-scrim)',display:'flex',alignItems:'flex-end'}}>
+      <div style={{width:'100%',background:'var(--surface-card)',borderRadius:'var(--r-sheet)',boxShadow:'var(--shadow-sheet)',padding:'10px 16px 18px'}}>
+        <div style={{width:36,height:4,borderRadius:3,background:'var(--grey-500)',margin:'8px auto 14px'}}></div>
+        <div style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:'var(--fs-15)',marginBottom:12}}>Unit C4 · Riverside Court</div>
+        <Button size="wide" block>Verify payment</Button>
+      </div>
+    </div>
+  </div>
+</div>}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script></body></html>

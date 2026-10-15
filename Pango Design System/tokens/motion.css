@@ -1,0 +1,17 @@
+/* Pango motion. Short, functional, no bounce on UI; one soft ease for sheets. */
+:root{
+  --dur-control:.14s; /* @kind other */   /* nav, button, cta */
+  --dur-toggle:.16s; /* @kind other */    /* switch */
+  --dur-card:.18s; /* @kind other */      /* card lift */
+  --dur-sheet:.22s; /* @kind other */
+  --dur-floor:.34s; /* @kind other */     /* building floors rising in */
+  --ease-sheet:cubic-bezier(.2,.8,.2,1); /* @kind other */
+  --ease-default:ease; /* @kind other */
+  --lift-card:translateY(-2px); /* @kind other */
+  --hover-brighten:brightness(1.08); /* @kind other */
+  --hover-darken:brightness(.97); /* @kind other */
+}
+@keyframes floorRise{from{transform:translateY(14px)}to{transform:none}}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes cellPop{from{transform:scale(.82)}to{transform:none}}
+@keyframes popIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
