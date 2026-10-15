@@ -1080,6 +1080,16 @@ h1 {
     transform: rotate(360deg);
   }
 }
+@keyframes pango-stepper-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .field {
   display: grid;
@@ -2759,30 +2769,36 @@ h1 {
 }
 .pango-stepper {
   display: flex;
-  gap: 0;
+  width: 100%;
+  align-items: flex-start;
   padding: 0;
   margin: 0;
   list-style: none;
 }
-.pango-stepper li {
-  position: relative;
-  flex: 1;
+.pango-stepper > li:not(.pango-stepper-connector) {
+  flex: 0 1 auto;
+  min-width: 0;
 }
-.pango-stepper li:not(:last-child)::after {
-  position: absolute;
-  top: 13px;
-  right: 12px;
-  left: 37px;
+.pango-stepper > li.pango-stepper-connector {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 24px;
+  align-items: flex-start;
+}
+.pango-stepper-connector::after {
+  flex: 1;
   height: 1px;
+  margin: 13px 12px 0;
   background: var(--border);
   content: "";
 }
-.pango-stepper li.is-complete:not(:last-child)::after {
+.pango-stepper-connector.is-complete::after {
   background: var(--accent);
 }
 .pango-stepper button {
   display: flex;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   align-items: flex-start;
   gap: 8px;
   padding: 0;
@@ -2790,6 +2806,9 @@ h1 {
   background: transparent;
   border: 0;
   text-align: left;
+}
+.pango-stepper button > div {
+  min-width: 0;
 }
 .pango-stepper button > span {
   display: grid;
@@ -2824,6 +2843,9 @@ h1 {
   margin-top: 2px;
   color: var(--text-muted);
   font-size: 9px;
+}
+.pango-stepper small.pango-stepper-state {
+  display: none;
 }
 .pango-stat-card {
   padding: 18px;
@@ -3024,8 +3046,11 @@ h1 {
 }
 .pango-story-stack {
   display: grid;
-  width: min(100%, 440px);
   gap: 16px;
+}
+.pango-story-wide {
+  width: 100%;
+  max-width: none;
 }
 .pango-story-actions {
   display: flex;
@@ -6018,10 +6043,40 @@ h1 {
   }
   .pango-stepper {
     display: grid;
-    gap: 13px;
+    gap: 6px;
   }
-  .pango-stepper li:not(:last-child)::after {
+  .pango-stepper > li:not(.pango-stepper-connector),
+  .pango-stepper button {
+    width: 100%;
+  }
+  .pango-stepper > li.pango-stepper-connector {
+    display: block;
+    width: 1px;
+    min-width: 1px;
+    height: 12px;
+    margin-left: 13px;
+    background: var(--border);
+  }
+  .pango-stepper > li.pango-stepper-connector.is-complete {
+    background: var(--accent);
+  }
+  .pango-stepper-connector::after {
     display: none;
+  }
+  .pango-stepper li:not(.is-current) .pango-stepper-description {
+    display: none;
+  }
+  .pango-stepper small.pango-stepper-state {
+    display: block;
+    color: var(--accent-ink);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .pango-stepper li.is-current .pango-stepper-step-label {
+    animation: pango-stepper-label-in var(--motion-control) ease both;
   }
 }
 
