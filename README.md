@@ -20,7 +20,7 @@ The preview app is the documentation experience. It has pages for each sidebar s
 
 `SearchMenu` is a composable primitive rather than a native select: consumers provide groups, rows, rich cards, and actions as children. Ordinary long lists scroll within a configurable panel; `SearchMenu.VirtualList` is available for large result sets. The controlled `loading` prop displays the spinner needed for a future endpoint-backed provider without changing the UI contract.
 
-`NumberInput` is a text-based numeric control with `inputMode="decimal"`. It formats the displayed value using the active or supplied locale, returns a raw number through `onValueChange`, and supports min, max, step, disabled, loading, validation, and accessible field messaging.
+`NumberInput` is a text-based numeric control with `inputMode="decimal"`. It formats the displayed value using the active or supplied locale, returns a raw number through `onValueChange`, and supports min, max, step, disabled, loading, validation, and accessible field messaging. `FileInput` adds a Pango dropzone, validated previews, per-file progress, retryable failures, and optional custom or endpoint-backed upload transport.
 
 `PhoneInput` is an opt-in lazy entry point. Import it from `pango-design-system/phone` when a page needs phone formatting; the `libphonenumber-js` metadata loads on first focus and is not part of the core or forms entries.
 
@@ -46,7 +46,7 @@ import { DataTable } from 'pango-design-system/table'
 | `pango-design-system` | Core controls, feedback, navigation, overlays, cards, and utilities. |
 | `/styles.css` | Fonts, semantic theme tokens, responsive rules, component styles, and reduced-motion defaults. |
 | `/tokens` and `/motion` | Shared control sizes, tone names, timing values, and opt-in Motion exports. |
-| `/forms` | Field composition, combobox, multi-select, date controls, number input, TanStack Form, and Zod. |
+| `/forms` | Field composition, file uploader, combobox, multi-select, date controls, number input, TanStack Form, and Zod. |
 | `/phone` | Opt-in, lazy-formatted phone input backed by `libphonenumber-js`. |
 | `/patterns` | Page headers, filters, settings, command palette, list-detail layouts, empty/loading/error states, and responsive navigation. |
 | `/table` and `/virtual` | Semantic tables, TanStack Table adapter, virtual lists, grids, and virtual data table. |
