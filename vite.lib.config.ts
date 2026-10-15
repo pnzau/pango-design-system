@@ -36,6 +36,7 @@ export default defineConfig({
   build: {
     outDir: 'dist-lib',
     emptyOutDir: true,
+    cssMinify: 'esbuild',
     lib: {
       entry: {
         index: resolve(import.meta.dirname, 'src/index.ts'),
