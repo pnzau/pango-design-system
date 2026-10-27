@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { Checkbox, CheckboxCard, RadioCard, RadioGroup, Switch, Textarea } from './Core'
 import { AutosaveStatus, Calendar, Combobox, DatePicker, DateRangePicker, MultiSelect, NumberInput, SearchField, TimePicker } from './Forms'
+import { FileInput } from './FileInput'
+import { PhoneInput } from './PhoneInput'
 import { Button, Input, InputField, Select } from './Primitives'
 
 const meta = {
@@ -30,12 +32,12 @@ export const TextAndSpecialisedInputs: Story = {
     <InputField label="Email address" labelFor="project-email"><Input id="project-email" type="email" placeholder="name@example.com" /></InputField>
     <InputField label="Password" labelFor="project-password" helperText="Use at least twelve characters."><Input id="project-password" type="password" defaultValue="pango-secret" /></InputField>
     <InputField label="Website" labelFor="project-site"><Input id="project-site" type="url" placeholder="https://example.com" /></InputField>
-    <InputField label="Phone number" labelFor="project-phone"><Input id="project-phone" type="tel" placeholder="+254 700 000 000" /></InputField>
+    <PhoneInput id="project-phone" label="Phone number" defaultCountry="KE" placeholder="+254 700 000 000" />
     <InputField label="Search projects" labelFor="project-search"><SearchField id="project-search" placeholder="Search projects" onDebouncedChange={() => undefined} /></InputField>
     <InputField helperText="This unlabeled inline control still aligns from the top edge."><Input aria-label="Internal project note" placeholder="Unlabelled inline value" /></InputField>
     <DatePicker label="Start date" defaultValue="2026-10-07" />
     <TimePicker label="Meeting time" defaultValue="09:30" />
-    <InputField label="Project file" labelFor="project-file" helperText="PDF, CSV, or image; 10 MB maximum."><Input id="project-file" type="file" /></InputField>
+    <FileInput id="project-file" label="Project file" helperText="PDF, CSV, or image; 10 MB maximum." allowedFileTypes={['application/pdf', 'text/csv', 'image/*']} maxFileSize={10 * 1024 * 1024} />
     <InputField label="Project notes" labelFor="project-notes"><Textarea id="project-notes" placeholder="Add a short note for the team" rows={4} /></InputField>
     <InputField label="Project code" labelFor="project-code" action={<Button size="sm" variant="outline">Generate</Button>}><Input id="project-code" defaultValue="pg-2026-014" /></InputField>
     <InputField label="Workspace slug" labelFor="workspace-slug" error="Use lowercase letters, numbers, and hyphens."><Input id="workspace-slug" invalid defaultValue="Pango Team" /></InputField>

@@ -30,6 +30,8 @@ import { PhoneInput } from 'pango-design-system/phone'
 <PhoneInput defaultCountry="KE" label="Phone number" onValueChange={setPhone} />
 ```
 
+The core entry point also includes the advanced workflow controls: `TreeView` and `TreeSelect` for nested resources, `NotificationCenter` for persistent actionable inbox items, `FilterBuilder` with saved views and draggable OR/AND condition groups, `AvatarGroup` and `PresenceIndicator` for collaboration surfaces, and `SegmentedControl` for compact mutually exclusive settings.
+
 ## Package entry points
 
 Import Pango styles once from the application boundary, then use the smallest entry point that fits the page.
@@ -43,7 +45,7 @@ import { DataTable } from 'pango-design-system/table'
 
 | Entry point | Contents |
 | --- | --- |
-| `pango-design-system` | Core controls, feedback, navigation, overlays, cards, and utilities. |
+| `pango-design-system` | Core controls, feedback, navigation, overlays, cards, workflow controls, and utilities. |
 | `/styles.css` | Fonts, semantic theme tokens, responsive rules, component styles, and reduced-motion defaults. |
 | `/tokens` and `/motion` | Shared control sizes, tone names, timing values, and opt-in Motion exports. |
 | `/forms` | Field composition, file uploader, combobox, multi-select, date controls, number input, TanStack Form, and Zod. |
@@ -53,7 +55,7 @@ import { DataTable } from 'pango-design-system/table'
 | `/dnd` | Draggable, droppable, sortable-list, sortable-grid, drag-handle, and drag overlay primitives. |
 | `/charts` and `/hotkeys` | TanStack Chart wrapper, sparklines, legends, product hotkeys, and shortcut-help UI. |
 
-The core entry point does not import tables, charts, forms, virtualisation, drag-and-drop, or hotkeys. Those dependencies and their component code remain isolated until a consuming page explicitly imports the matching entry point.
+The core entry point does not import tables, charts, forms, virtualisation, or hotkeys. Drag-and-drop is included by `FilterBuilder` for its conditional reordering; the table, chart, form, virtualisation, and hotkey dependencies remain isolated until a consuming page explicitly imports the matching entry point.
 
 ## Design contract
 
@@ -67,7 +69,7 @@ The core entry point does not import tables, charts, forms, virtualisation, drag
 
 Stories cover primitive variants and states, controls and surfaces, a complete Forms gallery, dialogs and notifications, the TanStack-powered data table, and composable search menus. Forms includes text, email, password, URL, telephone, search, date, time, file, textarea, NumberInput, checkbox, switch, radios, select, combobox, multi-select, date picker, and checkbox/radio cards. Search menu stories cover grouped results, loading and empty states, scrollable card results, virtualised countries, and keyboard selection. The toolbar swaps the entire story canvas between light and dark token modes.
 
-Storybook 9 is used instead of the initially requested Storybook 8 because this project uses Vite 7, while Storybook 8 declares compatibility only through Vite 6. The Storybook build is otherwise a standard React/Vite implementation.
+Storybook 9 is used instead of the initially requested Storybook 8 because this project uses Vite 7, while Storybook 8 declares compatibility only through Vite 6. The Storybook build is otherwise a standard React/Vite implementation. The Navigation/Tree, Feedback/Notification center, Data/Filter builder, Collaboration/Presence, and Forms/Segmented control stories provide interactive examples for the workflow controls.
 
 ## Verification
 
