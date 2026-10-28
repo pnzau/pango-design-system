@@ -3903,24 +3903,33 @@ h1 {
   width: min(100%, 340px);
 }
 .pango-search-field.is-expandable {
-  width: 40px;
-  transition: width var(--motion-surface) ease;
+  width: 48px;
+  height: 40px;
+  transition:
+    width var(--motion-surface) ease,
+    height var(--motion-surface) ease;
 }
-.pango-search-field.is-expandable.is-expanded,
-.pango-search-field.is-expandable:has(.input:not(:placeholder-shown)) {
+.pango-search-field.is-expandable.is-expanded {
   width: min(100%, 340px);
+  height: 40px;
 }
 .pango-search-field.is-expandable .input {
   min-width: 0;
+  height: 100%;
+  padding-left: 12px;
   color: transparent;
   caret-color: transparent;
+  border-radius: var(--radius-control);
+  pointer-events: none;
   transition: color var(--motion-control) ease;
 }
-.pango-search-field.is-expandable.is-expanded .input,
-.pango-search-field.is-expandable:has(.input:not(:placeholder-shown)) .input {
+.pango-search-field.is-expandable.is-expanded .input {
+  height: 40px;
+  padding-left: 34px;
   color: var(--ink);
   caret-color: auto;
   border-radius: 8px;
+  pointer-events: auto;
 }
 .pango-search-field.is-expandable .input::placeholder {
   color: transparent;
@@ -3928,6 +3937,32 @@ h1 {
 }
 .pango-search-field.is-expandable.is-expanded .input::placeholder {
   color: var(--text-muted);
+}
+.pango-search-field > .pango-search-trigger {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.pango-search-field.is-expandable.is-expanded > .pango-search-trigger {
+  left: 11px;
+  width: 22px;
+  height: 22px;
+  transform: translateY(-50%);
+}
+.pango-search-field.is-expandable.is-expanded > .pango-search-trigger svg {
+  width: 16px;
+  height: 16px;
 }
 .pango-search-field > svg {
   position: absolute;
@@ -3938,7 +3973,7 @@ h1 {
 .pango-search-field .input {
   padding-left: 34px;
 }
-.pango-search-field > button {
+.pango-search-field > .pango-search-clear {
   position: absolute;
   right: 9px;
   display: grid;

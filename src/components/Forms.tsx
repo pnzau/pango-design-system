@@ -138,7 +138,7 @@ export function SearchField({
   onValueChange?: (value: string) => void;
   onDebouncedChange?: (value: string) => void;
   delay?: number;
-  /** Expands the field on focus without changing the standard search default. */
+  /** Enables the compact search trigger that expands on icon click. */
   expandOnFocus?: boolean;
 }) {
   const [query, setQuery] = useControllableState({
@@ -146,8 +146,14 @@ export function SearchField({
     defaultValue,
     onChange: onValueChange,
   });
-  const [focused, setFocused] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<number | null>(null);
+  const isExpanded = expanded || Boolean(query);
+  const expand = () => {
+    setExpanded(true);
+    window.requestAnimationFrame(() => inputRef.current?.focus());
+  };
   const update = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
     setQuery(nextValue);
@@ -162,28 +168,42 @@ export function SearchField({
       className={cx(
         "pango-search-field",
         expandOnFocus && "is-expandable",
-        focused && "is-expanded",
+        expandOnFocus && isExpanded && "is-expanded",
       )}
     >
-      <Search size={16} />
+      {expandOnFocus ? (
+        <button
+          type="button"
+          className="pango-search-trigger"
+          aria-label={isExpanded ? "Focus search" : "Expand search"}
+          aria-expanded={isExpanded}
+          onClick={expand}
+        >
+          <Search size={24} aria-hidden="true" />
+        </button>
+      ) : (
+        <Search size={16} aria-hidden="true" />
+      )}
       <Input
+        ref={inputRef}
         value={query}
         placeholder={placeholder}
         type="search"
         onChange={update}
         onFocus={(event: FocusEvent<HTMLInputElement>) => {
-          setFocused(true);
           onFocus?.(event);
         }}
         onBlur={(event: FocusEvent<HTMLInputElement>) => {
-          setFocused(false);
+          if (expandOnFocus && !query) setExpanded(false);
           onBlur?.(event);
         }}
         {...props}
+        tabIndex={expandOnFocus && !isExpanded ? -1 : props.tabIndex}
       />
       {query && (
         <button
           type="button"
+          className="pango-search-clear"
           aria-label="Clear search"
           onClick={() => {
             setQuery("");

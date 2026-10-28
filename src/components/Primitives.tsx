@@ -1,5 +1,6 @@
 import {
   Children,
+  forwardRef,
   isValidElement,
   useEffect,
   useMemo,
@@ -399,18 +400,21 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   invalid?: boolean;
 };
 
-export function Input({
-  action,
-  description,
-  error,
-  helperText,
-  label,
-  hint,
-  invalid = false,
-  id,
-  className = "",
-  ...props
-}: InputProps) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    action,
+    description,
+    error,
+    helperText,
+    label,
+    hint,
+    invalid = false,
+    id,
+    className = "",
+    ...props
+  },
+  ref,
+) {
   const inputId =
     id ??
     (typeof label === "string"
@@ -421,6 +425,7 @@ export function Input({
   const control = (
     <input
       id={inputId}
+      ref={ref}
       className={cx("input", invalid && "input-invalid", className)}
       aria-invalid={invalid || undefined}
       {...props}
@@ -440,7 +445,7 @@ export function Input({
       {control}
     </InputField>
   );
-}
+});
 
 export type SelectMenuOption = {
   value: string;
