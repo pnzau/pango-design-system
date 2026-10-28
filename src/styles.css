@@ -3903,7 +3903,7 @@ h1 {
   width: min(100%, 340px);
 }
 .pango-search-field.is-expandable {
-  width: 48px;
+  width: 40px;
   height: 40px;
   transition:
     width var(--motion-surface) ease,

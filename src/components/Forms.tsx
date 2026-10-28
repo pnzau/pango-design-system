@@ -179,7 +179,7 @@ export function SearchField({
           aria-expanded={isExpanded}
           onClick={expand}
         >
-          <Search size={24} aria-hidden="true" />
+          <Search size={16} aria-hidden="true" />
         </button>
       ) : (
         <Search size={16} aria-hidden="true" />
