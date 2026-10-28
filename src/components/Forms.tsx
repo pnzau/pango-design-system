@@ -345,6 +345,8 @@ export function Combobox({
   onValueChange,
   placeholder = "Select an option",
   emptyMessage = "No options found.",
+  createLabel = "Create",
+  onCreate,
   label,
 }: {
   options: readonly SelectOption[];
@@ -353,6 +355,10 @@ export function Combobox({
   onValueChange?: (value: string) => void;
   placeholder?: string;
   emptyMessage?: ReactNode;
+  /** Enables a choice such as “Create \"Utilities\"” from the typed query. */
+  createLabel?: ReactNode | ((value: string) => ReactNode);
+  /** Return the created option's value when it differs from the entered label. */
+  onCreate?: (value: string) => string | void | Promise<string | void>;
   label?: string;
 }) {
   const [selected, setSelected] = useControllableState({
@@ -362,6 +368,7 @@ export function Combobox({
   });
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const inputId = useStableId("combobox");
   useOutsidePointer(open, [rootRef], () => setOpen(false));
@@ -375,6 +382,19 @@ export function Combobox({
     [options, query],
   );
   const selectedOption = options.find((option) => option.value === selected);
+  const createValue = query.trim();
+  const createOption = async () => {
+    if (!onCreate || !createValue || creating) return;
+    setCreating(true);
+    try {
+      const createdValue = await onCreate(createValue);
+      setSelected(createdValue ?? createValue);
+      setOpen(false);
+      setQuery("");
+    } finally {
+      setCreating(false);
+    }
+  };
   return (
     <div className="pango-combobox" ref={rootRef}>
       <label className="sr-only" htmlFor={inputId}>
@@ -402,6 +422,10 @@ export function Combobox({
           }}
           onKeyDown={(event) => {
             if (event.key === "Escape") setOpen(false);
+            if (event.key === "Enter" && onCreate && createValue) {
+              event.preventDefault();
+              void createOption();
+            }
           }}
         />
         {selected && (
@@ -442,6 +466,18 @@ export function Combobox({
               </button>
             </li>
           ))}
+          {onCreate && createValue && (
+            <li className="pango-combobox-create">
+              <button type="button" disabled={creating} onClick={() => void createOption()}>
+                <Plus size={15} aria-hidden="true" />
+                <span>
+                  {typeof createLabel === "function"
+                    ? createLabel(createValue)
+                    : <>{createLabel} “{createValue}”</>}
+                </span>
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </div>
@@ -667,6 +703,142 @@ export function DatePicker({
                 close();
               }}
             />
+          </div>
+        )}
+      </div>
+    </InputField>
+  );
+}
+
+/**
+ * A month-level picker for reporting periods, billing cycles, and similar
+ * values. Its value uses the sortable `YYYY-MM` format.
+ */
+export function MonthPicker({
+  value,
+  defaultValue,
+  onValueChange,
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+  min,
+  max,
+  label = "Month",
+  placeholder = "Pick a month",
+  clearable = true,
+  disabled = false,
+  id,
+}: DateFieldProps & {
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  const [selected, setSelected] = useControllableState({
+    value,
+    defaultValue: defaultValue ?? "",
+    onChange: onValueChange,
+  });
+  const selectedMonth = parseYearMonth(selected);
+  const [year, setYear] = useState(() =>
+    (selectedMonth ?? new Date()).getFullYear(),
+  );
+  const inputId = useStableId("month", id);
+  const panelId = `${inputId}-picker`;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useControllableState({
+    value: controlledOpen,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
+  const close = () => {
+    setOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  };
+
+  useOutsidePointer(open, [rootRef], close);
+  useEscapeKey(open, close);
+  useEffect(() => {
+    if (selectedMonth) setYear(selectedMonth.getFullYear());
+  }, [selected]);
+
+  return (
+    <InputField className="pango-date-field" label={label} labelFor={inputId}>
+      <div className="pango-date-picker" ref={rootRef}>
+        <button
+          ref={triggerRef}
+          id={inputId}
+          className="pango-date-picker-trigger"
+          type="button"
+          disabled={disabled}
+          aria-expanded={open}
+          aria-controls={panelId}
+          aria-haspopup="dialog"
+          aria-label={!label ? "Choose month" : undefined}
+          onClick={() => setOpen((current) => !current)}
+        >
+          <CalendarDays size={16} aria-hidden="true" />
+          <span>{selectedMonth ? formatMonth(selectedMonth) : placeholder}</span>
+        </button>
+        {clearable && selected && (
+          <button
+            className="pango-date-picker-clear"
+            type="button"
+            aria-label="Clear month"
+            disabled={disabled}
+            onClick={() => setSelected("")}
+          >
+            <X size={14} />
+          </button>
+        )}
+        {open && (
+          <div
+            className="pango-date-picker-panel"
+            id={panelId}
+            role="dialog"
+            aria-label="Choose a month"
+          >
+            <div className="pango-calendar-header">
+              <button
+                type="button"
+                aria-label={`Previous year, ${year - 1}`}
+                onClick={() => setYear((current) => current - 1)}
+              >
+                <ChevronLeft size={16} aria-hidden="true" />
+              </button>
+              <strong>{year}</strong>
+              <button
+                type="button"
+                aria-label={`Next year, ${year + 1}`}
+                onClick={() => setYear((current) => current + 1)}
+              >
+                <ChevronRight size={16} aria-hidden="true" />
+              </button>
+            </div>
+            <div className="pango-calendar-period-grid">
+              {Array.from({ length: 12 }, (_, month) => {
+                const date = new Date(year, month, 1);
+                const monthValue = toYearMonth(date);
+                const unavailable = isYearMonthOutsideLimits(monthValue, min, max);
+                return (
+                  <button
+                    type="button"
+                    key={monthValue}
+                    className={cx(selected === monthValue && "is-selected")}
+                    disabled={unavailable}
+                    onClick={() => {
+                      setSelected(monthValue);
+                      close();
+                    }}
+                  >
+                    {date.toLocaleDateString(undefined, { month: "short" })}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
@@ -1420,6 +1592,21 @@ function parseISODate(value?: string) {
     : undefined;
 }
 
+function parseYearMonth(value?: string) {
+  if (!value || !/^\d{4}-\d{2}$/.test(value)) return undefined;
+  const [year, month] = value.split("-").map(Number);
+  if (month < 1 || month > 12) return undefined;
+  return new Date(year, month - 1, 1);
+}
+
+function toYearMonth(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function isYearMonthOutsideLimits(value: string, min?: string, max?: string) {
+  return Boolean((min && value < min.slice(0, 7)) || (max && value > max.slice(0, 7)));
+}
+
 function toISODate(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
@@ -1431,6 +1618,13 @@ function startOfMonth(date: Date) {
 function formatDate(date: Date) {
   return date.toLocaleDateString(undefined, {
     day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatMonth(date: Date) {
+  return date.toLocaleDateString(undefined, {
     month: "short",
     year: "numeric",
   });

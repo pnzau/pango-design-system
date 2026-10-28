@@ -41,6 +41,14 @@
       "types": "./dist-lib/patterns.d.ts",
       "import": "./dist-lib/patterns.js"
     },
+    "./marketing": {
+      "types": "./dist-lib/marketing.d.ts",
+      "import": "./dist-lib/marketing.js"
+    },
+    "./workflows": {
+      "types": "./dist-lib/workflows.d.ts",
+      "import": "./dist-lib/workflows.js"
+    },
     "./table": {
       "types": "./dist-lib/table.d.ts",
       "import": "./dist-lib/table.js"

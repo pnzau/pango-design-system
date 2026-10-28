@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { Checkbox, CheckboxCard, RadioCard, RadioGroup, Switch, Textarea } from './Core'
-import { AutosaveStatus, Calendar, Combobox, DatePicker, DateRangePicker, MultiSelect, NumberInput, SearchField, TimePicker } from './Forms'
+import { AutosaveStatus, Calendar, Combobox, DatePicker, DateRangePicker, MonthPicker, MultiSelect, NumberInput, SearchField, TimePicker } from './Forms'
 import { FileInput } from './FileInput'
 import { PhoneInput } from './PhoneInput'
 import { Button, Input, InputField, Select } from './Primitives'
@@ -36,6 +36,7 @@ export const TextAndSpecialisedInputs: Story = {
     <InputField label="Search projects" labelFor="project-search"><SearchField id="project-search" placeholder="Search projects" onDebouncedChange={() => undefined} /></InputField>
     <InputField helperText="This unlabeled inline control still aligns from the top edge."><Input aria-label="Internal project note" placeholder="Unlabelled inline value" /></InputField>
     <DatePicker label="Start date" defaultValue="2026-10-07" />
+    <MonthPicker label="Reporting month" defaultValue="2026-10" />
     <TimePicker label="Meeting time" defaultValue="09:30" />
     <FileInput id="project-file" label="Project file" helperText="PDF, CSV, or image; 10 MB maximum." allowedFileTypes={['application/pdf', 'text/csv', 'image/*']} maxFileSize={10 * 1024 * 1024} />
     <InputField label="Project notes" labelFor="project-notes"><Textarea id="project-notes" placeholder="Add a short note for the team" rows={4} /></InputField>
@@ -60,12 +61,12 @@ export const SelectionControls: Story = {
     const [person, setPerson] = useState('maya')
     const [team, setTeam] = useState(['maya'])
     const [plan, setPlan] = useState('team')
-    return <div className="pango-story-stack"><Checkbox label="Share product diagnostics" description="Includes performance and interaction metrics only." defaultChecked /><Switch label="Notify on failed checks" description="Get a message when an automated check fails." defaultChecked /><RadioGroup name="release" label="Release channel" defaultValue="stable" options={[{ value: 'stable', label: 'Stable', description: 'Recommended for production.' }, { value: 'early', label: 'Early access', description: 'See new features first.' }]} /><Select label="Timezone" options={timezones} defaultValue="Africa/Nairobi" /><Combobox label="Project lead" options={people} value={person} onValueChange={setPerson} /><MultiSelect options={people} value={team} onValueChange={setTeam} /><div className="pango-story-card-options"><CheckboxCard label="Keep activity history" description="Retain a read-only audit trail for this workspace." value="30 days" defaultChecked /><CheckboxCard label="Record the configuration history needed to explain a change months after it happened" description="Long copy demonstrates how card choices stay readable in a narrow container." value="90 days" /><RadioCard name="plan" value="starter" checked={plan === 'starter'} onCheckedChange={() => setPlan('starter')} label="Starter" description="For a small product team." /><RadioCard name="plan" value="team" checked={plan === 'team'} onCheckedChange={() => setPlan('team')} label="Team" description="For multiple projects and collaborators." /><CheckboxCard label="Unavailable option" description="Shown as disabled while preserving the option’s context." disabled /></div></div>
+    return <div className="pango-story-stack"><Checkbox label="Share product diagnostics" description="Includes performance and interaction metrics only." defaultChecked /><Switch label="Notify on failed checks" description="Get a message when an automated check fails." defaultChecked /><RadioGroup name="release" label="Release channel" defaultValue="stable" options={[{ value: 'stable', label: 'Stable', description: 'Recommended for production.' }, { value: 'early', label: 'Early access', description: 'See new features first.' }]} /><Select label="Timezone" options={timezones} defaultValue="Africa/Nairobi" /><Combobox label="Project lead" options={people} value={person} onValueChange={setPerson} /><Combobox label="Expense category" options={[{ value: 'home', label: 'Home' }, { value: 'food', label: 'Food' }]} placeholder="Search or add a category" onCreate={(category) => category.toLowerCase().replaceAll(' ', '-')} /><MultiSelect options={people} value={team} onValueChange={setTeam} /><div className="pango-story-card-options"><CheckboxCard label="Keep activity history" description="Retain a read-only audit trail for this workspace." value="30 days" defaultChecked /><CheckboxCard label="Record the configuration history needed to explain a change months after it happened" description="Long copy demonstrates how card choices stay readable in a narrow container." value="90 days" /><RadioCard name="plan" value="starter" checked={plan === 'starter'} onCheckedChange={() => setPlan('starter')} label="Starter" description="For a small product team." /><RadioCard name="plan" value="team" checked={plan === 'team'} onCheckedChange={() => setPlan('team')} label="Team" description="For multiple projects and collaborators." /><CheckboxCard label="Unavailable option" description="Shown as disabled while preserving the option’s context." disabled /></div></div>
   },
 }
 
 export const DateControls: Story = {
-  render: () => <div className="pango-story-stack"><DatePicker label="Invoice date" defaultValue="2026-10-07" /><DateRangePicker label="Billing period" defaultValue={{ start: '2026-10-07', end: '2026-10-14' }} /><TimePicker label="Review time" defaultValue="09:30" min="08:00" max="18:00" /><Calendar defaultValue={new Date(2026, 9, 7)} /></div>,
+  render: () => <div className="pango-story-stack"><DatePicker label="Invoice date" defaultValue="2026-10-07" /><MonthPicker label="Reporting month" defaultValue="2026-10" min="2026-01" max="2026-12" /><DateRangePicker label="Billing period" defaultValue={{ start: '2026-10-07', end: '2026-10-14' }} /><TimePicker label="Review time" defaultValue="09:30" min="08:00" max="18:00" /><Calendar defaultValue={new Date(2026, 9, 7)} /></div>,
 }
 
 export const CalendarMonthAndYearPicker: Story = {

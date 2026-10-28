@@ -47,6 +47,8 @@ export default defineConfig({
         forms: resolve(import.meta.dirname, 'src/forms.ts'),
         phone: resolve(import.meta.dirname, 'src/phone.tsx'),
         patterns: resolve(import.meta.dirname, 'src/patterns.ts'),
+        marketing: resolve(import.meta.dirname, 'src/marketing.ts'),
+        workflows: resolve(import.meta.dirname, 'src/workflows.ts'),
         table: resolve(import.meta.dirname, 'src/table.tsx'),
         virtual: resolve(import.meta.dirname, 'src/virtual.tsx'),
         dnd: resolve(import.meta.dirname, 'src/dnd.tsx'),

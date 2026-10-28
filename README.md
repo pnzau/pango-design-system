@@ -51,11 +51,13 @@ import { DataTable } from 'pango-design-system/table'
 | `/forms` | Field composition, file uploader, combobox, multi-select, date controls, number input, TanStack Form, and Zod. |
 | `/phone` | Opt-in, lazy-formatted phone input backed by `libphonenumber-js`. |
 | `/patterns` | Page headers, filters, settings, command palette, list-detail layouts, empty/loading/error states, and responsive navigation. |
+| `/marketing` | Opt-in marketing compositions: navigation, hero, logo cloud, feature sections, pricing, testimonials, CTA, footer, FAQ, and availability grid. |
+| `/workflows` | Opt-in product compositions: application shell, amount field, board, progress card, checklist, scoped access, assistant chat, tour, and editable list. |
 | `/table` and `/virtual` | Semantic tables, TanStack Table adapter, virtual lists, grids, and virtual data table. |
 | `/dnd` | Draggable, droppable, sortable-list, sortable-grid, drag-handle, and drag overlay primitives. |
 | `/charts` and `/hotkeys` | TanStack Chart wrapper, sparklines, legends, product hotkeys, and shortcut-help UI. |
 
-The core entry point does not import tables, charts, forms, virtualisation, or hotkeys. Drag-and-drop is included by `FilterBuilder` for its conditional reordering; the table, chart, form, virtualisation, and hotkey dependencies remain isolated until a consuming page explicitly imports the matching entry point.
+The core entry point does not import tables, charts, forms, virtualisation, hotkeys, marketing, or product-workflow compositions. Drag-and-drop is included by `FilterBuilder` for its conditional reordering; the table, chart, form, virtualisation, hotkey, marketing, and workflow dependencies remain isolated until a consuming page explicitly imports the matching entry point.
 
 ## Design contract
 
@@ -67,7 +69,7 @@ The core entry point does not import tables, charts, forms, virtualisation, or h
 
 ## Storybook
 
-Stories cover primitive variants and states, controls and surfaces, a complete Forms gallery, dialogs and notifications, the TanStack-powered data table, and composable search menus. Forms includes text, email, password, URL, telephone, search, date, time, file, textarea, NumberInput, checkbox, switch, radios, select, combobox, multi-select, date picker, and checkbox/radio cards. Search menu stories cover grouped results, loading and empty states, scrollable card results, virtualised countries, and keyboard selection. The toolbar swaps the entire story canvas between light and dark token modes.
+Stories cover primitive variants and states, controls and surfaces, a complete Forms gallery, dialogs and notifications, the TanStack-powered data table, composable search menus, marketing compositions, and product-workflow compositions. Forms includes text, email, password, URL, telephone, search, date, month, time, file, textarea, NumberInput, checkbox, switch, radios, select, combobox (including creation), multi-select, and checkbox/radio cards. Search menu stories cover grouped results, loading and empty states, scrollable card results, virtualised countries, and keyboard selection. The toolbar swaps the entire story canvas between light and dark token modes.
 
 Storybook 9 is used instead of the initially requested Storybook 8 because this project uses Vite 7, while Storybook 8 declares compatibility only through Vite 6. The Storybook build is otherwise a standard React/Vite implementation. The Navigation/Tree, Feedback/Notification center, Data/Filter builder, Collaboration/Presence, and Forms/Segmented control stories provide interactive examples for the workflow controls.
 
