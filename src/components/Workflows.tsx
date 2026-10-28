@@ -62,17 +62,29 @@ export function ApplicationShell({
                 aria-current={selected ? "page" : undefined}
                 onClick={() => onNavigate(item.id)}
               >
-                {item.icon && <span className="pango-application-nav-icon">{item.icon}</span>}
+                {item.icon && (
+                  <span className="pango-application-nav-icon">
+                    {item.icon}
+                  </span>
+                )}
                 <span>{item.label}</span>
-                {item.badge && <span className="pango-application-nav-badge">{item.badge}</span>}
+                {item.badge && (
+                  <span className="pango-application-nav-badge">
+                    {item.badge}
+                  </span>
+                )}
               </button>
             );
           })}
         </nav>
-        {footer && <div className="pango-application-sidebar-footer">{footer}</div>}
+        {footer && (
+          <div className="pango-application-sidebar-footer">{footer}</div>
+        )}
       </aside>
       <div className="pango-application-main">
-        {header && <header className="pango-application-header">{header}</header>}
+        {header && (
+          <header className="pango-application-header">{header}</header>
+        )}
         <main>{children}</main>
       </div>
     </div>
@@ -119,7 +131,7 @@ export function AmountField({
     onChange: onValueChange,
   });
   const total = (amount.unitPrice ?? 0) * (amount.quantity ?? 0);
-  const effectiveAmount = amount.mode === "unit" ? total : amount.amount ?? 0;
+  const effectiveAmount = amount.mode === "unit" ? total : (amount.amount ?? 0);
   const update = (change: Partial<AmountFieldValue>) =>
     setAmount((current) => ({ ...current, ...change }));
 
@@ -134,7 +146,10 @@ export function AmountField({
           onValueChange={(mode) => {
             update({
               mode,
-              unit: mode === "unit" ? amount.unit ?? unitOptions[0]?.value : amount.unit,
+              unit:
+                mode === "unit"
+                  ? (amount.unit ?? unitOptions[0]?.value)
+                  : amount.unit,
             });
           }}
           options={[
@@ -144,18 +159,15 @@ export function AmountField({
         />
       </header>
       {amount.mode === "flat" ? (
-        <div className="pango-amount-flat-input">
-          <span aria-hidden="true">{currency}</span>
-          <NumberInput
-            label=""
-            aria-label={`${String(label)} in ${currency}`}
-            value={amount.amount}
-            onValueChange={(nextValue) => update({ amount: nextValue })}
-            locale={locale}
-            formatOptions={{ maximumFractionDigits: 2 }}
-            placeholder="0"
-          />
-        </div>
+        <NumberInput
+          prefix={currency}
+          aria-label={`${String(label)} in ${currency}`}
+          value={amount.amount}
+          onValueChange={(nextValue) => update({ amount: nextValue })}
+          locale={locale}
+          formatOptions={{ maximumFractionDigits: 2 }}
+          placeholder="0"
+        />
       ) : (
         <>
           <div className="pango-amount-unit-inputs">
@@ -190,8 +202,8 @@ export function AmountField({
           </div>
           <div className="pango-amount-total" aria-live="polite">
             <span>
-              {formatAmount(amount.unitPrice ?? 0, currency, locale)} × {amount.quantity ?? 0}{" "}
-              {unitLabel(amount.unit, unitOptions)}
+              {formatAmount(amount.unitPrice ?? 0, currency, locale)} ×{" "}
+              {amount.quantity ?? 0} {unitLabel(amount.unit, unitOptions)}
             </span>
             <Money value={total} currency={currency} locale={locale} />
           </div>
@@ -371,7 +383,9 @@ export function Checklist({
               disabled={item.disabled}
               onChange={() => toggle(item.id)}
             />
-            {item.detail && <span className="pango-checklist-detail">{item.detail}</span>}
+            {item.detail && (
+              <span className="pango-checklist-detail">{item.detail}</span>
+            )}
             {onItemAction && (
               <IconButton
                 label={`Edit ${String(item.label)}`}
@@ -414,11 +428,13 @@ export function AccessScope({
   emptyMessage?: ReactNode;
   className?: string;
 }) {
-  const [selectedIds, setSelectedIds] = useControllableState<readonly string[]>({
-    value,
-    defaultValue,
-    onChange: onValueChange,
-  });
+  const [selectedIds, setSelectedIds] = useControllableState<readonly string[]>(
+    {
+      value,
+      defaultValue,
+      onChange: onValueChange,
+    },
+  );
   const selected = useMemo(() => new Set(selectedIds), [selectedIds]);
   const toggle = (id: string) =>
     setSelectedIds((current) =>
@@ -428,7 +444,10 @@ export function AccessScope({
     );
 
   return (
-    <section className={cx("pango-access-scope", className)} aria-label={String(label)}>
+    <section
+      className={cx("pango-access-scope", className)}
+      aria-label={String(label)}
+    >
       <header>
         <div>
           <span className="field-label">{label}</span>
@@ -577,7 +596,12 @@ export function AssistantChat({
           disabled={sending}
           onChange={(event) => setDraft(event.target.value)}
         />
-        <Button type="submit" aria-label="Send message" loading={sending} disabled={!draft.trim()}>
+        <Button
+          type="submit"
+          aria-label="Send message"
+          loading={sending}
+          disabled={!draft.trim()}
+        >
           <Send size={15} aria-hidden="true" />
           Send
         </Button>
@@ -617,7 +641,10 @@ export function GuidedTour({
     defaultValue: defaultCurrent,
     onChange: onCurrentChange,
   });
-  const boundedIndex = Math.min(Math.max(stepIndex, 0), Math.max(steps.length - 1, 0));
+  const boundedIndex = Math.min(
+    Math.max(stepIndex, 0),
+    Math.max(steps.length - 1, 0),
+  );
   const step = steps[boundedIndex];
   const isLast = boundedIndex === steps.length - 1;
   const advance = () => {
@@ -639,11 +666,19 @@ export function GuidedTour({
       className="pango-guided-tour"
     >
       <div className="pango-guided-tour-content">
-        {step.visual && <div className="pango-guided-tour-visual">{step.visual}</div>}
+        {step.visual && (
+          <div className="pango-guided-tour-visual">{step.visual}</div>
+        )}
         <p>{step.description}</p>
-        <div className="pango-guided-tour-progress" aria-label={`Step ${boundedIndex + 1} of ${steps.length}`}>
+        <div
+          className="pango-guided-tour-progress"
+          aria-label={`Step ${boundedIndex + 1} of ${steps.length}`}
+        >
           {steps.map((tourStep, index) => (
-            <span className={cx(index <= boundedIndex && "is-complete")} key={tourStep.id} />
+            <span
+              className={cx(index <= boundedIndex && "is-complete")}
+              key={tourStep.id}
+            />
           ))}
         </div>
         <footer>
@@ -663,7 +698,13 @@ export function GuidedTour({
             )}
             <Button
               size="sm"
-              iconAfter={isLast ? <Check size={15} aria-hidden="true" /> : <ChevronRight size={15} aria-hidden="true" />}
+              iconAfter={
+                isLast ? (
+                  <Check size={15} aria-hidden="true" />
+                ) : (
+                  <ChevronRight size={15} aria-hidden="true" />
+                )
+              }
               onClick={advance}
             >
               {isLast ? "Finish" : "Next"}
@@ -707,7 +748,12 @@ export function EditableList({
         <header>
           {label && <h3>{label}</h3>}
           {onAdd && (
-            <Button size="sm" variant="ghost" icon={<Plus size={14} aria-hidden="true" />} onClick={onAdd}>
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={<Plus size={14} aria-hidden="true" />}
+              onClick={onAdd}
+            >
               {addLabel}
             </Button>
           )}
@@ -719,7 +765,11 @@ export function EditableList({
             <div className="pango-editable-list-grip" aria-hidden="true">
               <GripVertical size={15} />
             </div>
-            {item.leading && <span className="pango-editable-list-leading">{item.leading}</span>}
+            {item.leading && (
+              <span className="pango-editable-list-leading">
+                {item.leading}
+              </span>
+            )}
             <span className="pango-editable-list-copy">
               <strong>{item.title}</strong>
               {item.description && <small>{item.description}</small>}
@@ -762,7 +812,10 @@ function formatAmount(value: number, currency: string, locale: string) {
   }).format(value);
 }
 
-function unitLabel(value: string | undefined, options: readonly AmountUnitOption[]) {
+function unitLabel(
+  value: string | undefined,
+  options: readonly AmountUnitOption[],
+) {
   if (!value) return "units";
   const option = options.find((candidate) => candidate.value === value);
   return typeof option?.label === "string" ? option.label : value;

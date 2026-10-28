@@ -1,5 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Building2, CircleDollarSign, UsersRound } from "lucide-react";
+import {
+  Building2,
+  CircleDollarSign,
+  FileText,
+  Paperclip,
+  UsersRound,
+} from "lucide-react";
 import {
   FeatureGrid,
   FeatureSpotlight,
@@ -20,19 +26,33 @@ const pricingPlans: readonly PricingPlan[] = [
   {
     id: "starter",
     name: "Starter",
-    description: "For a growing portfolio",
-    price: { byBilling: { monthly: "KSh 1,900 / mo", annual: "KSh 1,500 / mo" } },
-    note: { byBilling: { monthly: "Billed monthly", annual: "Billed annually · save 20%" } },
-    features: ["25 spaces", "One manager", "Payment reconciliation"],
+    description: "For a growing team",
+    price: { byBilling: { monthly: "$19 / mo", annual: "$15 / mo" } },
+    note: {
+      byBilling: {
+        monthly: "Billed monthly",
+        annual: "Billed annually · save 20%",
+      },
+    },
+    features: ["10 projects", "Three collaborators", "Basic reporting"],
     action: <Button variant="outline">Start free</Button>,
   },
   {
     id: "pro",
     name: "Pro",
-    description: "For teams and agencies",
-    price: { byBilling: { monthly: "KSh 5,500 / mo", annual: "KSh 4,500 / mo" } },
-    note: { byBilling: { monthly: "Billed monthly", annual: "Billed annually · save 20%" } },
-    features: ["Unlimited spaces", "Unlimited managers", "Advanced reporting"],
+    description: "For teams and studios",
+    price: { byBilling: { monthly: "$55 / mo", annual: "$45 / mo" } },
+    note: {
+      byBilling: {
+        monthly: "Billed monthly",
+        annual: "Billed annually · save 20%",
+      },
+    },
+    features: [
+      "Unlimited projects",
+      "Unlimited collaborators",
+      "Advanced reporting",
+    ],
     action: <Button>Start trial</Button>,
     badge: "Most popular",
     featured: true,
@@ -53,63 +73,189 @@ export const LandingPage: Story = {
   render: () => (
     <>
       <MarketingNav
-        brand="Nyumbani"
+        brand="Northstar"
         links={[
           { label: "Features", href: "#features" },
           { label: "Pricing", href: "#pricing" },
           { label: "FAQ", href: "#faq" },
         ]}
-        actions={<><Button size="sm" variant="ghost">Sign in</Button><Button size="sm">Start free</Button></>}
+        actions={
+          <>
+            <Button size="sm" variant="ghost">
+              Sign in
+            </Button>
+            <Button size="sm">Start free</Button>
+          </>
+        }
       />
       <MarketingHero
-        eyebrow="Built for landlord teams"
-        title={<>Rentals, <br />handled.</>}
-        description="A single place for spaces, payments, repairs, and every person who keeps a portfolio running."
-        actions={<><Button size="lg">Start free</Button><Button size="lg" variant="outline">See a demo</Button></>}
+        eyebrow="Built for focused teams"
+        title={
+          <>
+            Work, <br />
+            handled.
+          </>
+        }
+        description="A single place for projects, reviews, decisions, and every person who keeps the work moving."
+        actions={
+          <>
+            <Button size="lg">Start free</Button>
+            <Button size="lg" variant="outline">
+              See a demo
+            </Button>
+          </>
+        }
         stats={[
-          { value: "1,240+", label: "Spaces managed" },
-          { value: "KSh 186M", label: "Collected" },
+          { value: "1,240+", label: "Work items" },
+          { value: "86%", label: "Completed" },
           { value: "4.8 / 5", label: "Team rating" },
         ]}
-        visual={<StatusGrid rows={[
-          { id: "floor-2", label: "FL 2", items: [
-            { id: "c1", label: "C1", description: "Otieno O.", tone: "danger" },
-            { id: "c2", label: "C2", description: "Achieng A.", tone: "success" },
-            { id: "c3", label: "C3", description: "Vacant", tone: "neutral" },
-          ] },
-          { id: "floor-1", label: "FL 1", items: [
-            { id: "b1", label: "B1", description: "Kibet R.", tone: "success" },
-            { id: "b2", label: "B2", description: "Due soon", tone: "warning" },
-            { id: "b3", label: "B3", description: "Salim H.", tone: "success" },
-          ] },
-        ]} />}
+        visual={
+          <StatusGrid
+            rows={[
+              {
+                id: "q3",
+                label: "Q3",
+                items: [
+                  {
+                    id: "c1",
+                    label: "Plan",
+                    description: "Needs review",
+                    tone: "danger",
+                  },
+                  {
+                    id: "c2",
+                    label: "Build",
+                    description: "On track",
+                    tone: "success",
+                  },
+                  {
+                    id: "c3",
+                    label: "Launch",
+                    description: "Queued",
+                    tone: "neutral",
+                  },
+                ],
+              },
+              {
+                id: "q2",
+                label: "Q2",
+                items: [
+                  {
+                    id: "b1",
+                    label: "Research",
+                    description: "Complete",
+                    tone: "success",
+                  },
+                  {
+                    id: "b2",
+                    label: "Design",
+                    description: "Due soon",
+                    tone: "warning",
+                  },
+                  {
+                    id: "b3",
+                    label: "Review",
+                    description: "Complete",
+                    tone: "success",
+                  },
+                ],
+              },
+            ]}
+          />
+        }
       />
-      <LogoCloud logos={["Acacia PM", "Runda Estates", "Kilimani Homes", "Coast Realty"]} />
+      <LogoCloud
+        logos={[
+          "Acacia Studio",
+          "Runda Labs",
+          "Kilimani Works",
+          "Coastline Co.",
+        ]}
+      />
       <FeatureGrid
         eyebrow="Everything in one place"
-        title="One dashboard for the whole portfolio"
+        title="One dashboard for the whole team"
         description="Give teams a shared source of truth without making the day-to-day feel heavy."
         items={[
-          { id: "spaces", icon: <Building2 size={16} />, title: "Spaces & units", description: "Represent locations exactly as they are built." },
-          { id: "payments", icon: <CircleDollarSign size={16} />, title: "Payments", description: "Review, reconcile, and understand each payment." },
-          { id: "access", icon: <UsersRound size={16} />, title: "Scoped access", description: "Give each person only the areas they need." },
+          {
+            id: "projects",
+            icon: <Building2 size={16} />,
+            title: "Projects & work",
+            description: "Represent ongoing work exactly as your team runs it.",
+          },
+          {
+            id: "reviews",
+            icon: <CircleDollarSign size={16} />,
+            title: "Reviews",
+            description: "Review, resolve, and understand every open decision.",
+          },
+          {
+            id: "access",
+            icon: <UsersRound size={16} />,
+            title: "Scoped access",
+            description: "Give each person only the areas they need.",
+          },
         ]}
       />
       <FeatureSpotlight
-        eyebrow="Payment verification"
-        title="Know exactly what was paid"
-        description="Review a claim at the item level, verify proof, and update the record in one focused workflow."
+        eyebrow="Decision tracking"
+        title="Know exactly what needs attention"
+        description="Review an item at the detail level, keep the context close, and update the record in one focused workflow."
         points={[
-          { id: "proof", title: "Proof attached", description: "Keep confirmation messages with the request." },
-          { id: "items", title: "Item-level review", description: "Confirm what was settled, not just a total." },
-          { id: "approve", title: "One clear action", description: "Approve and update the status immediately." },
+          {
+            id: "context",
+            title: "Context attached",
+            description: "Keep notes and references with the work item.",
+          },
+          {
+            id: "details",
+            title: "Detail-level review",
+            description: "Confirm what changed, not just a summary.",
+          },
+          {
+            id: "action",
+            title: "One clear action",
+            description: "Resolve and update the status immediately.",
+          },
         ]}
-        visual={<div className="pango-story-spotlight-card"><strong>Payment claim</strong><StatusChip tone="warning">Pending review</StatusChip><span>Rent · KSh 52,000</span><span>Water · KSh 1,500</span><Button size="sm">Confirm payment</Button></div>}
+        visual={
+          <div className="pango-story-spotlight-card">
+            <div className="pango-story-spotlight-card-header">
+              <div className="pango-story-spotlight-card-title">
+                <span className="pango-story-spotlight-card-eyebrow">
+                  Work item
+                </span>
+                <strong>Launch brief</strong>
+              </div>
+              <StatusChip tone="warning">Pending review</StatusChip>
+            </div>
+            <div className="pango-story-spotlight-card-meta">
+              <span>
+                <FileText size={14} aria-hidden="true" />
+                12 notes
+              </span>
+              <span>
+                <Paperclip size={14} aria-hidden="true" />4 files
+              </span>
+            </div>
+            <div className="pango-story-spotlight-card-footer">
+              <div className="pango-story-spotlight-card-owner">
+                <Avatar initials="MI" tone="violet" size="sm" />
+                <span>Maya Imani</span>
+              </div>
+              <Button size="sm">Review item</Button>
+            </div>
+          </div>
+        }
       />
       <PricingTable
         eyebrow="Simple pricing"
-        title="Plans that grow with you"
-        billingOptions={[{ value: "monthly", label: "Monthly" }, { value: "annual", label: "Annual", hint: "Save 20%" }]}
+        title="Plans that grow with the team"
+        billingOptions={[
+          { value: "monthly", label: "Monthly" },
+          { value: "annual", label: "Annual", hint: "Save 20%" },
+        ]}
         defaultBilling="annual"
         plans={pricingPlans}
         footer="Every plan includes core workflow, support, and secure access controls."
@@ -117,32 +263,83 @@ export const LandingPage: Story = {
       <TestimonialGrid
         title="Teams are sleeping better"
         testimonials={[
-          { id: "james", quote: "The overdue view finally gave us a reliable weekly rhythm.", name: "James Mwangi", detail: "Landlord · 42 units", avatar: <Avatar initials="JM" /> },
-          { id: "grace", quote: "Repair updates stopped the calls before they started.", name: "Grace Wambui", detail: "Apex Property Management", avatar: <Avatar initials="GW" tone="blue" /> },
-          { id: "fatuma", quote: "Scoped access is why I can confidently invite my caretaker.", name: "Fatuma Ali", detail: "Landlord · Mombasa", avatar: <Avatar initials="FA" tone="violet" /> },
+          {
+            id: "james",
+            quote: "The review queue finally gave us a reliable weekly rhythm.",
+            name: "James Mwangi",
+            detail: "Operations lead · 42 projects",
+            avatar: <Avatar initials="JM" />,
+          },
+          {
+            id: "grace",
+            quote:
+              "Status updates stopped the follow-up messages before they started.",
+            name: "Grace Wambui",
+            detail: "Product operations",
+            avatar: <Avatar initials="GW" tone="blue" />,
+          },
+          {
+            id: "fatuma",
+            quote:
+              "Scoped access is why I can confidently invite collaborators.",
+            name: "Fatuma Ali",
+            detail: "Team lead · Mombasa",
+            avatar: <Avatar initials="FA" tone="violet" />,
+          },
         ]}
       />
       <FrequentlyAskedQuestions
         items={[
-          { id: "free", title: "How does the free plan work?", content: "Start with the essentials, then change plans when the portfolio needs more." },
-          { id: "roles", title: "Can I limit what a manager sees?", content: "Yes. Access can be scoped to exactly the records and spaces a person manages." },
-          { id: "cancel", title: "Can I cancel anytime?", content: "Yes. Your plan is always controlled from your account." },
+          {
+            id: "free",
+            title: "How does the free plan work?",
+            content:
+              "Start with the essentials, then change plans when the team needs more.",
+          },
+          {
+            id: "roles",
+            title: "Can I limit what a teammate sees?",
+            content:
+              "Yes. Access can be scoped to exactly the records and projects a person manages.",
+          },
+          {
+            id: "cancel",
+            title: "Can I cancel anytime?",
+            content: "Yes. Your plan is always controlled from your account.",
+          },
         ]}
         defaultValue={["free"]}
       />
       <MarketingCallToAction
         title="Ready to bring the work together?"
         description="Set up the first workspace in minutes."
-        actions={<><Button>Start free</Button><Button variant="outline">Talk to us</Button></>}
+        actions={
+          <>
+            <Button>Start free</Button>
+            <Button variant="outline">Talk to us</Button>
+          </>
+        }
       />
       <MarketingFooter
-        brand="Nyumbani"
-        description="The property management platform built for focused teams."
+        brand="Northstar"
+        description="The workspace platform built for focused teams."
         groups={[
-          { id: "product", title: "PRODUCT", links: [{ label: "Features" }, { label: "Pricing" }, { label: "Access" }] },
-          { id: "company", title: "COMPANY", links: [{ label: "About" }, { label: "Contact" }] },
+          {
+            id: "product",
+            title: "PRODUCT",
+            links: [
+              { label: "Features" },
+              { label: "Pricing" },
+              { label: "Access" },
+            ],
+          },
+          {
+            id: "company",
+            title: "COMPANY",
+            links: [{ label: "About" }, { label: "Contact" }],
+          },
         ]}
-        legal="© 2026 Nyumbani · Terms · Privacy"
+        legal="© 2026 Northstar · Terms · Privacy"
       />
     </>
   ),
@@ -154,11 +351,20 @@ export const StatusBoard: Story = {
       selectedIds={["a2"]}
       onItemClick={() => undefined}
       rows={[
-        { id: "floor-1", label: "FL 1", items: [
-          { id: "a1", label: "A1", description: "Paid", tone: "success" },
-          { id: "a2", label: "A2", description: "Selected", tone: "accent" },
-          { id: "a3", label: "A3", description: "Available", tone: "neutral" },
-        ] },
+        {
+          id: "floor-1",
+          label: "FL 1",
+          items: [
+            { id: "a1", label: "A1", description: "Paid", tone: "success" },
+            { id: "a2", label: "A2", description: "Selected", tone: "accent" },
+            {
+              id: "a3",
+              label: "A3",
+              description: "Available",
+              tone: "neutral",
+            },
+          ],
+        },
       ]}
     />
   ),

@@ -8,5 +8,18 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist-lib"
   },
-  "include": ["src/index.ts", "src/styles.ts", "src/tokens.ts", "src/forms.ts", "src/phone.tsx", "src/patterns.ts", "src/table.tsx", "src/virtual.tsx", "src/dnd.tsx", "src/charts.tsx", "src/hotkeys.tsx", "src/motion.ts"]
+  "include": [
+    "src/index.ts",
+    "src/styles.ts",
+    "src/tokens.ts",
+    "src/forms.ts",
+    "src/phone.tsx",
+    "src/patterns.ts",
+    "src/table.tsx",
+    "src/virtual.tsx",
+    "src/dnd.tsx",
+    "src/charts.tsx",
+    "src/hotkeys.tsx",
+    "src/motion.ts"
+  ]
 }

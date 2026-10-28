@@ -22,8 +22,8 @@ The system was extracted from one source: `uploads/Pango - offline.html`, a
 self-contained offline bundle of Pango, a property-management app for Kenyan
 landlords. Every value here is that app's real value — 5px means 5px, and the three
 webfonts are the files from the bundle, not substitutes. Three later components
-(`DatePicker`, `Dropdown`, `NumberInput`) come from a second source, the Ganji finance
-app, ported to this system's tokens.
+(`DatePicker`, `Dropdown`, `NumberInput`) come from a second finance source, ported to
+this system's tokens.
 
 That origin shows in two places only, both deliberate: `ui_kits/pango-app/` is still
 the rental product, and the brand mark is still Pango's. Everything else has been
@@ -89,7 +89,7 @@ source app names:
 - **`Icon`** — wraps the app's inline 24×24 stroke SVGs (paths copied verbatim) so screens don't paste SVG.
 - **`TileGrid`** — one component over the tile-row pattern the origin app open-codes in two places.
 - **`ThemeToggle`** — added with dark mode; neither source app had a theme switch.
-- **`Popover`** — the anchored layer under `Dropdown` and `DatePicker`, lifted out of the Ganji source.
+- **`Popover`** — the anchored layer under `Dropdown` and `DatePicker`, lifted out of the finance source.
 
 Patterns neither source has and which this system therefore omits: toasts, tooltips,
 tabs, accordions, breadcrumbs, pagination, skeleton loaders.

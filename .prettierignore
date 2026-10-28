@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-lib
+storybook-static
+Pango Design System/
+public/fonts/
+*.woff2
+*.svg

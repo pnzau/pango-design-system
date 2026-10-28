@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AvatarGroup, PresenceIndicator, type AvatarGroupItem } from "./Collaboration";
+import {
+  AvatarGroup,
+  PresenceIndicator,
+  type AvatarGroupItem,
+} from "./Collaboration";
 
 const collaborators: readonly AvatarGroupItem[] = [
   { id: "maya", name: "Maya Otieno", status: "online", tone: "violet" },
@@ -41,5 +45,11 @@ export const Large: Story = {
   args: {
     size: "lg",
     max: 3,
+  },
+};
+
+export const LivePresence: Story = {
+  args: {
+    pulseOnline: true,
   },
 };

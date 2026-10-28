@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useState } from 'react'
-import { Stepper } from './Data'
-import { Button } from './Primitives'
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
+import { Stepper } from "./Data";
+import { Button } from "./Primitives";
 
 const meta = {
-  title: 'Navigation/Stepper',
+  title: "Navigation/Stepper",
   component: Stepper,
-} satisfies Meta<typeof Stepper>
+} satisfies Meta<typeof Stepper>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const steps = [
-  { label: 'Choose files', description: 'Select the files to upload.' },
-  { label: 'Upload files', description: 'Send the selected files.' },
-]
+  { label: "Choose files", description: "Select the files to upload." },
+  { label: "Upload files", description: "Send the selected files." },
+];
 
 export const UploadFlow: Story = {
   args: {
@@ -22,7 +22,7 @@ export const UploadFlow: Story = {
     current: 0,
   },
   render: function UploadFlowStory(args) {
-    const [current, setCurrent] = useState(args.current)
+    const [current, setCurrent] = useState(args.current);
 
     return (
       <div className="pango-story-stack pango-story-wide">
@@ -47,6 +47,6 @@ export const UploadFlow: Story = {
           </Button>
         </div>
       </div>
-    )
+    );
   },
-}
+};

@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cx, useControllableState, useStableId } from "../lib/utils";
 
 export type TabItem = {
@@ -17,6 +17,7 @@ export function Tabs({
   defaultValue,
   onValueChange,
   label = "Tabs",
+  motion = true,
   className,
 }: {
   items: readonly TabItem[];
@@ -24,6 +25,8 @@ export function Tabs({
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   label?: string;
+  /** Uses a shared underline that travels between tabs. */
+  motion?: boolean;
   className?: string;
 }) {
   const [activeValue, setActiveValue] = useControllableState({
@@ -36,6 +39,33 @@ export function Tabs({
     items.findIndex((item) => item.id === activeValue),
     0,
   );
+  const listRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicator, setIndicator] = useState<{ left: number; width: number }>();
+  const updateIndicator = useCallback(() => {
+    const list = listRef.current;
+    const activeTab = tabRefs.current[activeValue];
+    if (!list || !activeTab) return;
+    const listBounds = list.getBoundingClientRect();
+    const tabBounds = activeTab.getBoundingClientRect();
+    setIndicator({
+      left: tabBounds.left - listBounds.left + list.scrollLeft + 11,
+      width: Math.max(0, tabBounds.width - 22),
+    });
+  }, [activeValue]);
+
+  useLayoutEffect(() => {
+    if (!motion) {
+      setIndicator(undefined);
+      return;
+    }
+    const frame = window.requestAnimationFrame(updateIndicator);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [motion, updateIndicator, items]);
 
   const moveFocus = (direction: 1 | -1) => {
     let nextIndex = activeIndex;
@@ -43,15 +73,17 @@ export function Tabs({
       nextIndex = (nextIndex + direction + items.length) % items.length;
       if (!items[nextIndex]?.disabled) {
         setActiveValue(items[nextIndex].id);
+        tabRefs.current[items[nextIndex].id]?.focus();
         return;
       }
     }
   };
 
   return (
-    <div className={cx("pango-tabs", className)}>
+    <div className={cx("pango-tabs", motion && "has-motion", className)}>
       <div
         className="pango-tab-list"
+        ref={listRef}
         role="tablist"
         aria-label={label}
         onKeyDown={(event) => {
@@ -70,6 +102,9 @@ export function Tabs({
           return (
             <button
               key={item.id}
+              ref={(element) => {
+                tabRefs.current[item.id] = element;
+              }}
               type="button"
               role="tab"
               id={`${instanceId}-tab-${item.id}`}
@@ -87,6 +122,15 @@ export function Tabs({
             </button>
           );
         })}
+        {motion && indicator && (
+          <span
+            className="pango-tab-motion-indicator"
+            aria-hidden="true"
+            style={
+              { left: indicator.left, width: indicator.width } as CSSProperties
+            }
+          />
+        )}
       </div>
       {items.map(
         (item) =>
@@ -119,12 +163,15 @@ export function Accordion({
   defaultValue = [],
   value,
   onValueChange,
+  motion = false,
 }: {
   items: readonly AccordionItem[];
   type?: "single" | "multiple";
   defaultValue?: string[];
   value?: string[];
   onValueChange?: (value: string[]) => void;
+  /** Preserves content in the DOM to animate open and close height changes. */
+  motion?: boolean;
 }) {
   const [openItems, setOpenItems] = useControllableState({
     value,
@@ -142,7 +189,7 @@ export function Accordion({
     );
   };
   return (
-    <div className="pango-accordion">
+    <div className={cx("pango-accordion", motion && "has-motion")}>
       {items.map((item) => {
         const isOpen = openItems.includes(item.id);
         return (
@@ -163,14 +210,16 @@ export function Accordion({
                 <ChevronRight size={17} />
               </button>
             </h3>
-            {isOpen && (
+            {(motion || isOpen) && (
               <div
                 id={`${instanceId}-content-${item.id}`}
                 role="region"
                 aria-labelledby={`${instanceId}-trigger-${item.id}`}
                 className="pango-accordion-content"
+                aria-hidden={!isOpen}
+                inert={!isOpen}
               >
-                {item.content}
+                <div>{item.content}</div>
               </div>
             )}
           </div>

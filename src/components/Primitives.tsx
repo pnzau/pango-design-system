@@ -12,7 +12,13 @@ import type {
   KeyboardEvent as ReactKeyboardEvent,
   ReactNode,
 } from "react";
-import { Check, ChevronDown, LoaderCircle } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  CircleAlert,
+  Copy,
+  LoaderCircle,
+} from "lucide-react";
 import {
   cx,
   useControllableState,
@@ -23,7 +29,7 @@ import {
 
 export type ControlSize = "sm" | "md" | "lg";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "solid" | "outline" | "soft" | "ghost";
   size?: ControlSize;
   icon?: ReactNode;
@@ -56,6 +62,194 @@ export function Button({
       {children && <span>{children}</span>}
       {iconAfter}
     </button>
+  );
+}
+
+export type AsyncActionStatus = "idle" | "pending" | "success" | "error";
+
+/**
+ * Runs an action with pending, success, and retry feedback while reserving the
+ * widest label up front, so adjacent controls never shift as the state changes.
+ */
+export function AsyncButton({
+  children,
+  onAction,
+  pendingLabel = children,
+  successLabel = "Done",
+  errorLabel = "Try again",
+  resetAfter = 1400,
+  onError,
+  disabled = false,
+  className,
+  "aria-label": ariaLabel,
+  ...props
+}: Omit<
+  ButtonProps,
+  "children" | "onClick" | "loading" | "icon" | "iconAfter"
+> & {
+  children: string;
+  onAction: () => void | Promise<void>;
+  pendingLabel?: string;
+  successLabel?: string;
+  errorLabel?: string;
+  resetAfter?: number;
+  onError?: (error: unknown) => void;
+}) {
+  const [status, setStatus] = useState<AsyncActionStatus>("idle");
+  const timerRef = useRef<number | undefined>(undefined);
+  const actionIdRef = useRef(0);
+  const labels = {
+    idle: children,
+    pending: pendingLabel,
+    success: successLabel,
+    error: errorLabel,
+  };
+  const clearReset = () => window.clearTimeout(timerRef.current);
+  const settle = (nextStatus: "success" | "error", actionId: number) => {
+    if (actionId !== actionIdRef.current) return;
+    setStatus(nextStatus);
+    clearReset();
+    if (resetAfter > 0) {
+      timerRef.current = window.setTimeout(() => {
+        if (actionId === actionIdRef.current) setStatus("idle");
+      }, resetAfter);
+    }
+  };
+  const runAction = () => {
+    if (disabled || status === "pending") return;
+    clearReset();
+    const actionId = actionIdRef.current + 1;
+    actionIdRef.current = actionId;
+    setStatus("pending");
+    Promise.resolve()
+      .then(onAction)
+      .then(
+        () => settle("success", actionId),
+        (error: unknown) => {
+          onError?.(error);
+          settle("error", actionId);
+        },
+      );
+  };
+
+  useEffect(
+    () => () => {
+      actionIdRef.current += 1;
+      clearReset();
+    },
+    [],
+  );
+
+  const stateIcon =
+    status === "pending" ? (
+      <LoaderCircle className="spin" size={15} aria-hidden="true" />
+    ) : status === "success" ? (
+      <Check size={15} aria-hidden="true" />
+    ) : status === "error" ? (
+      <CircleAlert size={15} aria-hidden="true" />
+    ) : undefined;
+
+  return (
+    <>
+      <Button
+        {...props}
+        aria-label={ariaLabel ?? labels[status]}
+        aria-busy={status === "pending" || undefined}
+        aria-disabled={status === "pending" || undefined}
+        className={cx("pango-async-button", `is-${status}`, className)}
+        disabled={disabled}
+        icon={<span className="pango-async-button-icon-slot">{stateIcon}</span>}
+        onClick={runAction}
+      >
+        <span className="pango-async-button-labels" aria-hidden="true">
+          {(Object.keys(labels) as AsyncActionStatus[]).map((key) => (
+            <span className={cx(key === status && "is-active")} key={key}>
+              {labels[key]}
+            </span>
+          ))}
+        </span>
+      </Button>
+      <span className="sr-only" role="status" aria-live="polite">
+        {status === "idle" ? "" : labels[status]}
+      </span>
+    </>
+  );
+}
+
+/** A compact clipboard control with an announced, time-limited copied state. */
+export function CopyButton({
+  value,
+  label = "Copy",
+  copiedLabel = "Copied",
+  showLabel = false,
+  resetAfter = 1800,
+  onCopy,
+  onCopyError,
+  className,
+  ...props
+}: Omit<ButtonProps, "children" | "onClick" | "icon" | "iconAfter"> & {
+  value: string;
+  label?: string;
+  copiedLabel?: string;
+  showLabel?: boolean;
+  resetAfter?: number;
+  onCopy?: () => void;
+  onCopyError?: (error: unknown) => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+
+  const copyValue = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      onCopy?.();
+      window.clearTimeout(timerRef.current);
+      if (resetAfter > 0) {
+        timerRef.current = window.setTimeout(
+          () => setCopied(false),
+          resetAfter,
+        );
+      }
+    } catch (error) {
+      onCopyError?.(error);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        {...props}
+        aria-label={copied ? copiedLabel : label}
+        className={cx(
+          "pango-copy-button",
+          !showLabel && "is-icon-only",
+          className,
+        )}
+        icon={
+          copied ? (
+            <Check size={15} aria-hidden="true" />
+          ) : (
+            <Copy size={15} aria-hidden="true" />
+          )
+        }
+        type="button"
+        onClick={() => void copyValue()}
+      >
+        {showLabel && (
+          <span className="pango-copy-button-labels" aria-hidden="true">
+            <span className={!copied ? "is-active" : undefined}>{label}</span>
+            <span className={copied ? "is-active" : undefined}>
+              {copiedLabel}
+            </span>
+          </span>
+        )}
+      </Button>
+      <span className="sr-only" role="status" aria-live="polite">
+        {copied ? copiedLabel : ""}
+      </span>
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import type { KeyboardEvent, ReactNode } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import { cx, useControllableState } from "../lib/utils";
 
 export type SegmentOption<T extends string = string> = {
@@ -15,6 +15,7 @@ export function SegmentedControl<T extends string = string>({
   onValueChange,
   ariaLabel = "Choose an option",
   size = "md",
+  motion = true,
   className,
 }: {
   options: readonly SegmentOption<T>[];
@@ -23,14 +24,46 @@ export function SegmentedControl<T extends string = string>({
   onValueChange?: (value: T) => void;
   ariaLabel?: string;
   size?: "sm" | "md" | "lg";
+  motion?: boolean;
   className?: string;
 }) {
   const [selectedValue, setSelectedValue] = useControllableState<T>({
     value,
-    defaultValue: defaultValue ?? options.find((option) => !option.disabled)?.value ?? options[0]?.value ?? ("" as T),
+    defaultValue:
+      defaultValue ??
+      options.find((option) => !option.disabled)?.value ??
+      options[0]?.value ??
+      ("" as T),
     onChange: onValueChange,
   });
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicator, setIndicator] = useState<
+    { left: number; width: number } | undefined
+  >();
+  const updateIndicator = useCallback(() => {
+    const selectedButton = buttonRefs.current[selectedValue];
+    if (!selectedButton) {
+      setIndicator(undefined);
+      return;
+    }
+    setIndicator({
+      left: selectedButton.offsetLeft,
+      width: selectedButton.offsetWidth,
+    });
+  }, [selectedValue]);
+
+  useLayoutEffect(() => {
+    if (!motion) {
+      setIndicator(undefined);
+      return;
+    }
+    const frame = window.requestAnimationFrame(updateIndicator);
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [motion, options, updateIndicator]);
 
   const moveSelection = (direction: 1 | -1) => {
     const enabled = options.filter((option) => !option.disabled);
@@ -39,7 +72,8 @@ export function SegmentedControl<T extends string = string>({
       enabled.findIndex((option) => option.value === selectedValue),
       0,
     );
-    const next = enabled[(currentIndex + direction + enabled.length) % enabled.length];
+    const next =
+      enabled[(currentIndex + direction + enabled.length) % enabled.length];
     if (!next) return;
     setSelectedValue(next.value);
     buttonRefs.current[next.value]?.focus();
@@ -67,11 +101,21 @@ export function SegmentedControl<T extends string = string>({
       className={cx(
         "pango-segmented-control",
         `pango-segmented-${size}`,
+        motion && "has-motion",
         className,
       )}
       role="radiogroup"
       aria-label={ariaLabel}
     >
+      {motion && indicator && (
+        <span
+          className="pango-segment-selection-indicator"
+          aria-hidden="true"
+          style={
+            { left: indicator.left, width: indicator.width } as CSSProperties
+          }
+        />
+      )}
       {options.map((option) => {
         const selected = option.value === selectedValue;
         return (

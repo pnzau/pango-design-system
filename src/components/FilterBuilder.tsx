@@ -16,12 +16,7 @@ import { DatePicker } from "./Forms";
 import { EmptyState } from "./Data";
 import { Button, IconButton, Input, Select } from "./Primitives";
 
-export type FilterFieldType =
-  | "text"
-  | "number"
-  | "date"
-  | "select"
-  | "boolean";
+export type FilterFieldType = "text" | "number" | "date" | "select" | "boolean";
 
 export type FilterOption = {
   value: string;
@@ -96,7 +91,9 @@ export function FilterBuilder({
 }) {
   const builderId = useStableId("filter-builder");
   const nextRuleId = useRef(0);
-  const [filters, setFilters] = useControllableState<readonly FilterCondition[]>({
+  const [filters, setFilters] = useControllableState<
+    readonly FilterCondition[]
+  >({
     value,
     defaultValue,
     onChange,
@@ -219,7 +216,10 @@ export function FilterBuilder({
   };
 
   return (
-    <section className={cx("pango-filter-builder", className)} aria-label={String(label)}>
+    <section
+      className={cx("pango-filter-builder", className)}
+      aria-label={String(label)}
+    >
       <header className="pango-filter-builder-header">
         <div>
           <span className="pango-filter-builder-kicker">
@@ -307,9 +307,7 @@ export function FilterBuilder({
                 onReorderGroup={reorderGroup}
               />
             )}
-            overlay={(condition) => (
-              <FilterDragPreview condition={condition} />
-            )}
+            overlay={(condition) => <FilterDragPreview condition={condition} />}
           />
         ) : (
           filters.map((condition, index) => (
@@ -382,7 +380,9 @@ export function FilterBuilder({
             size="sm"
             tone="soft"
             onClick={() => {
-              const view = savedViews.find((candidate) => candidate.id === currentViewId);
+              const view = savedViews.find(
+                (candidate) => candidate.id === currentViewId,
+              );
               if (view) {
                 onDeleteView(view);
                 if (activeViewId === undefined) setInternalViewId("");
@@ -440,7 +440,10 @@ function FilterConditionView({
   }
 
   return (
-    <section className="pango-filter-builder-and-group" aria-label="AND filter group">
+    <section
+      className="pango-filter-builder-and-group"
+      aria-label="AND filter group"
+    >
       <header className="pango-filter-builder-and-header">
         {draggable && <DragHandle label="Reorder AND group" />}
         <span className="pango-filter-builder-logic" aria-hidden="true">
@@ -469,7 +472,9 @@ function FilterConditionView({
           onReorder={(rules) => onReorderGroup(condition.id, rules)}
           className="pango-filter-builder-and-sortable-list"
           renderItem={(rule) => {
-            const field = fields.find((candidate) => candidate.id === rule.field);
+            const field = fields.find(
+              (candidate) => candidate.id === rule.field,
+            );
             if (!field) return null;
             return (
               <FilterRuleRow
@@ -511,7 +516,9 @@ function FilterDragPreview({ condition }: { condition: FilterCondition }) {
     );
   }
 
-  return <div className="pango-filter-builder-drag-preview">Filter condition</div>;
+  return (
+    <div className="pango-filter-builder-drag-preview">Filter condition</div>
+  );
 }
 
 function FilterLogicDivider({ label }: { label: "AND" | "OR" }) {
@@ -549,7 +556,9 @@ function FilterRuleRow({
   const valueRequired = !["is_empty", "is_not_empty"].includes(filter.operator);
 
   return (
-    <div className={cx("pango-filter-builder-row", draggable && "has-drag-handle")}>
+    <div
+      className={cx("pango-filter-builder-row", draggable && "has-drag-handle")}
+    >
       {draggable && <DragHandle label="Reorder filter condition" />}
       <div className="pango-filter-builder-control">
         <Select
@@ -561,7 +570,8 @@ function FilterRuleRow({
             label: candidate.label,
           }))}
           onValueChange={(fieldId) => {
-            const nextField = fields.find((candidate) => candidate.id === fieldId) ?? field;
+            const nextField =
+              fields.find((candidate) => candidate.id === fieldId) ?? field;
             onChange({
               field: nextField.id,
               operator: operatorsFor(nextField)[0]?.value ?? "is",
@@ -576,17 +586,31 @@ function FilterRuleRow({
           aria-label="Filter operator"
           value={filter.operator}
           options={operatorOptions}
-          onValueChange={(operator) => onChange({ operator: operator as FilterOperator })}
+          onValueChange={(operator) =>
+            onChange({ operator: operator as FilterOperator })
+          }
         />
       </div>
-      {valueRequired && <FilterValueInput field={field} filter={filter} onChange={onChange} />}
+      {valueRequired && (
+        <FilterValueInput field={field} filter={filter} onChange={onChange} />
+      )}
       <div className="pango-filter-builder-row-actions">
         {canGroup && onGroup && (
-          <IconButton label="Group with AND" size="sm" tone="soft" onClick={onGroup}>
+          <IconButton
+            label="Group with AND"
+            size="sm"
+            tone="soft"
+            onClick={onGroup}
+          >
             <GitBranch size={14} aria-hidden="true" />
           </IconButton>
         )}
-        <IconButton label="Remove filter" size="sm" tone="soft" onClick={onRemove}>
+        <IconButton
+          label="Remove filter"
+          size="sm"
+          tone="soft"
+          onClick={onRemove}
+        >
           <X size={14} aria-hidden="true" />
         </IconButton>
       </div>
@@ -704,7 +728,9 @@ function operatorsFor(field: FilterField) {
   ] as const;
 }
 
-function isFilterAndGroup(condition: FilterCondition): condition is FilterAndGroup {
+function isFilterAndGroup(
+  condition: FilterCondition,
+): condition is FilterAndGroup {
   return "type" in condition && condition.type === "and";
 }
 

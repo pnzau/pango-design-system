@@ -24,15 +24,25 @@ export function PageHeader({
   description,
   actions,
   children,
+  sticky = false,
+  stickyOffset = 0,
+  className,
 }: {
   eyebrow?: ReactNode;
   title: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
   children?: ReactNode;
+  /** Pins the page context and its actions in a scrolling product surface. */
+  sticky?: boolean;
+  stickyOffset?: number;
+  className?: string;
 }) {
   return (
-    <header className="pango-page-header">
+    <header
+      className={cx("pango-page-header", sticky && "is-sticky", className)}
+      style={sticky ? { top: stickyOffset } : undefined}
+    >
       <div>
         <div className="pango-page-heading">
           {eyebrow && <span className="pango-page-eyebrow">{eyebrow}</span>}

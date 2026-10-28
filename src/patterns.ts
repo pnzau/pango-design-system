@@ -1,1 +1,1 @@
-export * from './components/Patterns'
+export * from "./components/Patterns";

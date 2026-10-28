@@ -10,12 +10,15 @@ export function PresenceIndicator({
   label,
   showLabel = true,
   size = "md",
+  pulse = false,
   className,
 }: {
   status: PresenceStatus;
   label?: ReactNode;
   showLabel?: boolean;
   size?: "sm" | "md" | "lg";
+  /** Adds a subtle activity ring for a status that is currently live. */
+  pulse?: boolean;
   className?: string;
 }) {
   const statusLabel = label ?? presenceLabel(status);
@@ -25,6 +28,7 @@ export function PresenceIndicator({
         "pango-presence-indicator",
         `pango-presence-${size}`,
         `is-${status}`,
+        pulse && "has-pulse",
         className,
       )}
       role={showLabel ? "status" : "img"}
@@ -53,6 +57,7 @@ export function AvatarGroup({
   size = "md",
   label = "Collaborators",
   onOverflowClick,
+  pulseOnline = false,
   className,
 }: {
   items: readonly AvatarGroupItem[];
@@ -60,6 +65,8 @@ export function AvatarGroup({
   size?: "sm" | "md" | "lg";
   label?: string;
   onOverflowClick?: () => void;
+  /** Opt-in activity rings for online people in a collaborative surface. */
+  pulseOnline?: boolean;
   className?: string;
 }) {
   const visibleItems = items.slice(0, Math.max(0, max));
@@ -67,7 +74,11 @@ export function AvatarGroup({
 
   return (
     <div
-      className={cx("pango-avatar-group", `pango-avatar-group-${size}`, className)}
+      className={cx(
+        "pango-avatar-group",
+        `pango-avatar-group-${size}`,
+        className,
+      )}
       role="group"
       aria-label={label}
     >
@@ -75,7 +86,9 @@ export function AvatarGroup({
         const content = (
           <span className="pango-avatar-group-avatar">
             {item.src ? (
-              <span className={cx("avatar", `avatar-${size}`, "pango-avatar-image")}>
+              <span
+                className={cx("avatar", `avatar-${size}`, "pango-avatar-image")}
+              >
                 <img src={item.src} alt="" />
               </span>
             ) : (
@@ -87,7 +100,12 @@ export function AvatarGroup({
               />
             )}
             {item.status && (
-              <PresenceIndicator status={item.status} size="sm" showLabel={false} />
+              <PresenceIndicator
+                status={item.status}
+                size="sm"
+                showLabel={false}
+                pulse={pulseOnline && item.status === "online"}
+              />
             )}
           </span>
         );
@@ -101,7 +119,11 @@ export function AvatarGroup({
             {content}
           </a>
         ) : (
-          <span className="pango-avatar-group-member" key={item.id} title={item.name}>
+          <span
+            className="pango-avatar-group-member"
+            key={item.id}
+            title={item.name}
+          >
             {content}
           </span>
         );

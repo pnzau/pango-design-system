@@ -72,7 +72,9 @@ export function MarketingHero({
         {eyebrow && <div className="pango-marketing-eyebrow">{eyebrow}</div>}
         <h1>{title}</h1>
         {description && <p>{description}</p>}
-        {actions && <div className="pango-marketing-hero-actions">{actions}</div>}
+        {actions && (
+          <div className="pango-marketing-hero-actions">{actions}</div>
+        )}
         {stats.length > 0 && (
           <dl className="pango-marketing-hero-stats">
             {stats.map((stat, index) => (
@@ -137,18 +139,26 @@ export function FeatureGrid({
     <section className={cx("pango-feature-grid-section", className)}>
       {(eyebrow || title || description) && (
         <header className="pango-marketing-section-heading">
-          {eyebrow && <span className="pango-marketing-eyebrow">{eyebrow}</span>}
+          {eyebrow && (
+            <span className="pango-marketing-eyebrow">{eyebrow}</span>
+          )}
           {title && <h2>{title}</h2>}
           {description && <p>{description}</p>}
         </header>
       )}
-      <div className={cx("pango-feature-grid", `pango-feature-grid-${columns}`)}>
+      <div
+        className={cx("pango-feature-grid", `pango-feature-grid-${columns}`)}
+      >
         {items.map((item) => (
           <Card className="pango-feature-card" key={item.id}>
-            {item.icon && <span className="pango-feature-card-icon">{item.icon}</span>}
+            {item.icon && (
+              <span className="pango-feature-card-icon">{item.icon}</span>
+            )}
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            {item.action && <div className="pango-feature-card-action">{item.action}</div>}
+            {item.action && (
+              <div className="pango-feature-card-action">{item.action}</div>
+            )}
           </Card>
         ))}
       </div>
@@ -197,7 +207,9 @@ export function FeatureSpotlight({
             {points.map((point) => (
               <li key={point.id}>
                 <span className="pango-feature-spotlight-point-icon">
-                  {point.icon ?? <Check size={13} strokeWidth={3} aria-hidden="true" />}
+                  {point.icon ?? (
+                    <Check size={13} strokeWidth={3} aria-hidden="true" />
+                  )}
                 </span>
                 <span>
                   <strong>{point.title}</strong>
@@ -226,8 +238,7 @@ export type PricingPlan = {
 };
 
 export type PricingValue =
-  | ReactNode
-  | { byBilling: Readonly<Record<string, ReactNode>> };
+  ReactNode | { byBilling: Readonly<Record<string, ReactNode>> };
 
 export type BillingOption = {
   value: string;
@@ -270,11 +281,17 @@ export function PricingTable({
     <section className={cx("pango-pricing-table", className)}>
       {(eyebrow || title || description || billingOptions.length > 0) && (
         <header className="pango-marketing-section-heading">
-          {eyebrow && <span className="pango-marketing-eyebrow">{eyebrow}</span>}
+          {eyebrow && (
+            <span className="pango-marketing-eyebrow">{eyebrow}</span>
+          )}
           {title && <h2>{title}</h2>}
           {description && <p>{description}</p>}
           {billingOptions.length > 0 && (
-            <div className="pango-pricing-billing" role="group" aria-label="Billing period">
+            <div
+              className="pango-pricing-billing"
+              role="group"
+              aria-label="Billing period"
+            >
               {billingOptions.map((option) => {
                 const selected = option.value === selectedBilling;
                 return (
@@ -294,7 +311,12 @@ export function PricingTable({
           )}
         </header>
       )}
-      <div className={cx("pango-pricing-plans", plans.length > 2 && "has-many-plans")}>
+      <div
+        className={cx(
+          "pango-pricing-plans",
+          plans.length > 2 && "has-many-plans",
+        )}
+      >
         {plans.map((plan) => (
           <Card
             className={cx("pango-pricing-plan", plan.featured && "is-featured")}
@@ -311,7 +333,9 @@ export function PricingTable({
               <strong>{priceFor(plan.price, activeBilling)}</strong>
               {plan.note && <small>{priceFor(plan.note, activeBilling)}</small>}
             </div>
-            {plan.action && <div className="pango-pricing-action">{plan.action}</div>}
+            {plan.action && (
+              <div className="pango-pricing-action">{plan.action}</div>
+            )}
             {plan.features && plan.features.length > 0 && (
               <ul>
                 {plan.features.map((feature, index) => (
@@ -356,7 +380,10 @@ export function TestimonialGrid({
           const rating = Math.min(Math.max(testimonial.rating ?? 5, 0), 5);
           return (
             <blockquote className="pango-testimonial" key={testimonial.id}>
-              <div className="pango-testimonial-rating" aria-label={`${rating} out of 5 stars`}>
+              <div
+                className="pango-testimonial-rating"
+                aria-label={`${rating} out of 5 stars`}
+              >
                 {Array.from({ length: 5 }, (_, index) => (
                   <Star
                     key={index}
@@ -558,7 +585,7 @@ function linkKey(link: MarketingLink, index: number) {
 function priceFor(value: PricingValue, billing: string | undefined): ReactNode {
   if (typeof value === "object" && value !== null && "byBilling" in value) {
     return billing
-      ? value.byBilling[billing] ?? Object.values(value.byBilling)[0]
+      ? (value.byBilling[billing] ?? Object.values(value.byBilling)[0])
       : Object.values(value.byBilling)[0];
   }
   return value;

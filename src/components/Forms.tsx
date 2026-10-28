@@ -10,7 +10,13 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ChangeEvent, InputHTMLAttributes, ReactNode } from "react";
+import type {
+  ChangeEvent,
+  CSSProperties,
+  FocusEvent,
+  InputHTMLAttributes,
+  ReactNode,
+} from "react";
 import {
   cx,
   useControllableState,
@@ -119,6 +125,9 @@ export function SearchField({
   onDebouncedChange,
   delay = 250,
   placeholder = "Search",
+  expandOnFocus = false,
+  onFocus,
+  onBlur,
   ...props
 }: Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -129,12 +138,15 @@ export function SearchField({
   onValueChange?: (value: string) => void;
   onDebouncedChange?: (value: string) => void;
   delay?: number;
+  /** Expands the field on focus without changing the standard search default. */
+  expandOnFocus?: boolean;
 }) {
   const [query, setQuery] = useControllableState({
     value,
     defaultValue,
     onChange: onValueChange,
   });
+  const [focused, setFocused] = useState(false);
   const timeoutRef = useRef<number | null>(null);
   const update = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
@@ -146,13 +158,27 @@ export function SearchField({
     );
   };
   return (
-    <span className="pango-search-field">
+    <span
+      className={cx(
+        "pango-search-field",
+        expandOnFocus && "is-expandable",
+        focused && "is-expanded",
+      )}
+    >
       <Search size={16} />
       <Input
         value={query}
         placeholder={placeholder}
         type="search"
         onChange={update}
+        onFocus={(event: FocusEvent<HTMLInputElement>) => {
+          setFocused(true);
+          onFocus?.(event);
+        }}
+        onBlur={(event: FocusEvent<HTMLInputElement>) => {
+          setFocused(false);
+          onBlur?.(event);
+        }}
         {...props}
       />
       {query && (
@@ -171,6 +197,161 @@ export function SearchField({
   );
 }
 
+export type SliderDetent = {
+  value: number;
+  label: ReactNode;
+};
+
+/**
+ * A native range input with optional named stopping points. `snapToDetents`
+ * only applies when explicitly enabled, so ordinary sliders retain their
+ * continuous behaviour.
+ */
+export function Slider({
+  value,
+  defaultValue,
+  onValueChange,
+  min = 0,
+  max = 100,
+  step = 1,
+  detents = [],
+  snapToDetents = false,
+  label,
+  formatValue = (nextValue) => String(nextValue),
+  id,
+  disabled = false,
+  className,
+}: {
+  value?: number;
+  defaultValue?: number;
+  onValueChange?: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  detents?: readonly SliderDetent[];
+  snapToDetents?: boolean;
+  label?: ReactNode;
+  formatValue?: (value: number) => ReactNode;
+  id?: string;
+  disabled?: boolean;
+  className?: string;
+}) {
+  const minimum = Math.min(min, max);
+  const maximum = Math.max(min, max);
+  const [currentValue, setCurrentValue] = useControllableState({
+    value,
+    defaultValue: defaultValue ?? minimum,
+    onChange: onValueChange,
+  });
+  const inputId = useStableId("slider", id);
+  const clamp = (nextValue: number) =>
+    Math.min(maximum, Math.max(minimum, nextValue));
+  const safeValue = clamp(currentValue);
+  const progress =
+    maximum === minimum
+      ? 0
+      : ((safeValue - minimum) / (maximum - minimum)) * 100;
+  const nearestDetent = (nextValue: number) => {
+    if (!snapToDetents || detents.length === 0) return nextValue;
+    const closest = detents.reduce((nearest, detent) =>
+      Math.abs(detent.value - nextValue) < Math.abs(nearest.value - nextValue)
+        ? detent
+        : nearest,
+    );
+    const threshold = (maximum - minimum) * 0.06;
+    return Math.abs(closest.value - nextValue) <= threshold
+      ? closest.value
+      : nextValue;
+  };
+  const commitValue = (nextValue: number, shouldSnap = false) => {
+    setCurrentValue(clamp(shouldSnap ? nearestDetent(nextValue) : nextValue));
+  };
+  const selectedDetent = detents.find((detent) => detent.value === safeValue);
+
+  return (
+    <div className={cx("pango-slider-field", className)}>
+      <div className="pango-slider-heading">
+        {label && (
+          <label className="field-label" htmlFor={inputId}>
+            {label}
+          </label>
+        )}
+        <output htmlFor={inputId}>{formatValue(safeValue)}</output>
+      </div>
+      <div
+        className="pango-slider-control"
+        style={{ "--pango-slider-progress": `${progress}%` } as CSSProperties}
+      >
+        <input
+          id={inputId}
+          type="range"
+          min={minimum}
+          max={maximum}
+          step={step}
+          value={safeValue}
+          disabled={disabled}
+          aria-valuetext={String(formatValue(safeValue))}
+          onChange={(event) => commitValue(Number(event.target.value))}
+          onPointerUp={(event) =>
+            commitValue(Number(event.currentTarget.value), true)
+          }
+          onBlur={(event) =>
+            commitValue(Number(event.currentTarget.value), true)
+          }
+          onKeyUp={(event) => {
+            if (
+              [
+                "ArrowDown",
+                "ArrowLeft",
+                "ArrowRight",
+                "ArrowUp",
+                "End",
+                "Home",
+                "PageDown",
+                "PageUp",
+              ].includes(event.key)
+            ) {
+              commitValue(Number(event.currentTarget.value), true);
+            }
+          }}
+        />
+        {detents.length > 0 && (
+          <div className="pango-slider-detents" aria-label="Slider detents">
+            {detents.map((detent) => {
+              const detentProgress =
+                maximum === minimum
+                  ? 0
+                  : ((clamp(detent.value) - minimum) / (maximum - minimum)) *
+                    100;
+              return (
+                <button
+                  type="button"
+                  key={detent.value}
+                  className={cx(
+                    selectedDetent?.value === detent.value && "is-selected",
+                  )}
+                  disabled={
+                    disabled || detent.value < minimum || detent.value > maximum
+                  }
+                  style={
+                    {
+                      "--pango-slider-detent-position": `${detentProgress}%`,
+                    } as CSSProperties
+                  }
+                  onClick={() => commitValue(detent.value)}
+                >
+                  <span aria-hidden="true" />
+                  <span>{detent.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function NumberInput({
   value,
   defaultValue,
@@ -181,6 +362,7 @@ export function NumberInput({
   max,
   step = 1,
   label,
+  prefix,
   id,
   className,
   disabled,
@@ -202,6 +384,7 @@ export function NumberInput({
   max?: number;
   step?: number;
   label?: ReactNode;
+  prefix?: ReactNode;
   hint?: ReactNode;
   invalid?: boolean;
   loading?: boolean;
@@ -244,7 +427,12 @@ export function NumberInput({
   return (
     <label className={cx("pango-number-field", className)} htmlFor={inputId}>
       {label && <span className="field-label">{label}</span>}
-      <span className="pango-number-input">
+      <span className={cx("pango-number-input", prefix && "has-prefix")}>
+        {prefix && (
+          <span className="pango-number-prefix" aria-hidden="true">
+            {prefix}
+          </span>
+        )}
         <input
           id={inputId}
           className={cx("input", invalid && "input-invalid")}
@@ -468,12 +656,20 @@ export function Combobox({
           ))}
           {onCreate && createValue && (
             <li className="pango-combobox-create">
-              <button type="button" disabled={creating} onClick={() => void createOption()}>
+              <button
+                type="button"
+                disabled={creating}
+                onClick={() => void createOption()}
+              >
                 <Plus size={15} aria-hidden="true" />
                 <span>
-                  {typeof createLabel === "function"
-                    ? createLabel(createValue)
-                    : <>{createLabel} “{createValue}”</>}
+                  {typeof createLabel === "function" ? (
+                    createLabel(createValue)
+                  ) : (
+                    <>
+                      {createLabel} “{createValue}”
+                    </>
+                  )}
                 </span>
               </button>
             </li>
@@ -781,7 +977,9 @@ export function MonthPicker({
           onClick={() => setOpen((current) => !current)}
         >
           <CalendarDays size={16} aria-hidden="true" />
-          <span>{selectedMonth ? formatMonth(selectedMonth) : placeholder}</span>
+          <span>
+            {selectedMonth ? formatMonth(selectedMonth) : placeholder}
+          </span>
         </button>
         {clearable && selected && (
           <button
@@ -822,7 +1020,11 @@ export function MonthPicker({
               {Array.from({ length: 12 }, (_, month) => {
                 const date = new Date(year, month, 1);
                 const monthValue = toYearMonth(date);
-                const unavailable = isYearMonthOutsideLimits(monthValue, min, max);
+                const unavailable = isYearMonthOutsideLimits(
+                  monthValue,
+                  min,
+                  max,
+                );
                 return (
                   <button
                     type="button"
@@ -1604,7 +1806,9 @@ function toYearMonth(date: Date) {
 }
 
 function isYearMonthOutsideLimits(value: string, min?: string, max?: string) {
-  return Boolean((min && value < min.slice(0, 7)) || (max && value > max.slice(0, 7)));
+  return Boolean(
+    (min && value < min.slice(0, 7)) || (max && value > max.slice(0, 7)),
+  );
 }
 
 function toISODate(date: Date) {

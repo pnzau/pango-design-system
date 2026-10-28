@@ -40,6 +40,7 @@ type TreeViewProps = {
   defaultExpandedIds?: readonly string[];
   onExpandedChange?: (ids: readonly string[]) => void;
   label?: string;
+  motion?: boolean;
   className?: string;
 };
 
@@ -56,6 +57,7 @@ export function TreeView({
   defaultExpandedIds = [],
   onExpandedChange,
   label = "Tree",
+  motion = true,
   className,
 }: TreeViewProps) {
   const [internalSelectedId, setInternalSelectedId] =
@@ -108,12 +110,10 @@ export function TreeView({
 
   return (
     <ul
-      className={cx("pango-tree", className)}
+      className={cx("pango-tree", motion && "has-motion", className)}
       role="tree"
       aria-label={label}
-      aria-multiselectable={
-        selectionMode === "multiple" ? true : undefined
-      }
+      aria-multiselectable={selectionMode === "multiple" ? true : undefined}
     >
       {nodes.map((node, index) => (
         <TreeItem
@@ -127,6 +127,7 @@ export function TreeView({
           selectedIds={resolvedSelectedIds}
           selectionMode={selectionMode}
           selectNode={selectNode}
+          motion={motion}
         />
       ))}
     </ul>
@@ -143,6 +144,7 @@ function TreeItem({
   selectedIds,
   selectionMode,
   selectNode,
+  motion,
 }: {
   node: TreeNode;
   level: number;
@@ -153,6 +155,7 @@ function TreeItem({
   selectedIds: readonly string[];
   selectionMode: TreeSelectionMode;
   selectNode: (node: TreeNode) => void;
+  motion: boolean;
 }) {
   const children = node.children ?? [];
   const hasChildren = children.length > 0;
@@ -167,6 +170,7 @@ function TreeItem({
       className={cx(
         "pango-tree-item",
         !hasChildren && "is-leaf",
+        isExpanded && "is-expanded",
         selectionMode === "multiple" && "is-multiple",
         isSelected && "is-selected",
         node.disabled && "is-disabled",
@@ -186,11 +190,11 @@ function TreeItem({
             aria-expanded={isExpanded}
             onClick={() => setExpanded(node.id)}
           >
-            {isExpanded ? (
-              <ChevronDown size={14} aria-hidden="true" />
-            ) : (
-              <ChevronRight size={14} aria-hidden="true" />
-            )}
+            <ChevronRight
+              className={cx(isExpanded && "is-expanded")}
+              size={14}
+              aria-hidden="true"
+            />
           </button>
         ) : (
           <span className="pango-tree-toggle-spacer" aria-hidden="true" />
@@ -203,10 +207,7 @@ function TreeItem({
         >
           {selectionMode === "multiple" && (
             <span
-              className={cx(
-                "pango-tree-checkbox",
-                isSelected && "is-checked",
-              )}
+              className={cx("pango-tree-checkbox", isSelected && "is-checked")}
               aria-hidden="true"
             >
               {isSelected && <Check size={11} strokeWidth={3} />}
@@ -228,23 +229,30 @@ function TreeItem({
           </span>
         </button>
       </div>
-      {hasChildren && isExpanded && (
-        <ul className="pango-tree-group" role="group">
-          {children.map((child, index) => (
-            <TreeItem
-              key={child.id}
-              node={child}
-              level={level + 1}
-              position={index + 1}
-              setExpanded={setExpanded}
-              expandedIds={expandedIds}
-              selectedId={selectedId}
-              selectedIds={selectedIds}
-              selectionMode={selectionMode}
-              selectNode={selectNode}
-            />
-          ))}
-        </ul>
+      {hasChildren && (motion || isExpanded) && (
+        <div
+          className={cx("pango-tree-group-wrap", isExpanded && "is-expanded")}
+          aria-hidden={!isExpanded}
+          inert={!isExpanded}
+        >
+          <ul className="pango-tree-group" role="group">
+            {children.map((child, index) => (
+              <TreeItem
+                key={child.id}
+                node={child}
+                level={level + 1}
+                position={index + 1}
+                setExpanded={setExpanded}
+                expandedIds={expandedIds}
+                selectedId={selectedId}
+                selectedIds={selectedIds}
+                selectionMode={selectionMode}
+                selectNode={selectNode}
+                motion={motion}
+              />
+            ))}
+          </ul>
+        </div>
       )}
     </li>
   );
@@ -322,10 +330,7 @@ export function TreeSelect({
           <ChevronDown size={15} aria-hidden="true" />
         </button>
         {open && (
-          <div
-            className="pango-tree-select-menu"
-            id={`${selectId}-tree`}
-          >
+          <div className="pango-tree-select-menu" id={`${selectId}-tree`}>
             <TreeView
               nodes={nodes}
               label={label ? `${String(label)} options` : "Options"}

@@ -16,46 +16,56 @@ npm run storybook
 
 ## Documentation site
 
-The preview app is the documentation experience. It has pages for each sidebar section, page-level guidance for intended use, examples, states, and accessibility, a synchronized responsive sidebar, and a useful 404 page. Its client-side search indexes titles, descriptions, keywords, component names, and section copy. Press `/` or Command/Control + K to focus it, use the arrow keys and Enter to navigate results, and Escape to close it.
+The preview app is the documentation experience. The overview is the landing page; the rest of the guidance lives in one anchored `/documentation` guide with topic-level examples, live compositions, and copyable code samples. Its client-side search indexes titles, descriptions, keywords, component names, and section copy. Press `/` or Command/Control + K to focus it, use the arrow keys and Enter to navigate results, and Escape to close it.
+
+The documentation site opens the hosted Storybook catalogue through `VITE_STORYBOOK_URL`. Set that variable in the deployment environment to the remote Storybook URL; the interface does not fall back to the local Storybook server.
 
 `SearchMenu` is a composable primitive rather than a native select: consumers provide groups, rows, rich cards, and actions as children. Ordinary long lists scroll within a configurable panel; `SearchMenu.VirtualList` is available for large result sets. The controlled `loading` prop displays the spinner needed for a future endpoint-backed provider without changing the UI contract.
 
-`NumberInput` is a text-based numeric control with `inputMode="decimal"`. It formats the displayed value using the active or supplied locale, returns a raw number through `onValueChange`, and supports min, max, step, disabled, loading, validation, and accessible field messaging. `FileInput` adds a Pango dropzone, validated previews, per-file progress, retryable failures, and optional custom or endpoint-backed upload transport.
+`NumberInput` is a text-based numeric control with `inputMode="decimal"`. It formats the displayed value using the active or supplied locale, returns a raw number through `onValueChange`, and supports min, max, step, an optional in-field `prefix`, disabled, loading, validation, and accessible field messaging. `FileInput` adds a Pango dropzone, validated previews, per-file progress, retryable failures, and optional custom or endpoint-backed upload transport.
 
 `PhoneInput` is an opt-in lazy entry point. Import it from `pango-design-system/phone` when a page needs phone formatting; the `libphonenumber-js` metadata loads on first focus and is not part of the core or forms entries.
 
 ```tsx
-import { PhoneInput } from 'pango-design-system/phone'
+import { PhoneInput } from "pango-design-system/phone";
 
-<PhoneInput defaultCountry="KE" label="Phone number" onValueChange={setPhone} />
+<PhoneInput
+  defaultCountry="KE"
+  label="Phone number"
+  onValueChange={setPhone}
+/>;
 ```
 
 The core entry point also includes the advanced workflow controls: `TreeView` and `TreeSelect` for nested resources, `NotificationCenter` for persistent actionable inbox items, `FilterBuilder` with saved views and draggable OR/AND condition groups, `AvatarGroup` and `PresenceIndicator` for collaboration surfaces, and `SegmentedControl` for compact mutually exclusive settings.
+
+## Opt-in micro-interactions
+
+Pango keeps its baseline controls calm, but exposes focused enhancements for places where feedback earns its keep. Use `AsyncButton` for actions that need pending, success, and retry states without layout shift; `CopyButton` for clipboard feedback; `SkeletonSwap` and `CollapsibleBanner` for asynchronous and status surfaces; and `Slider` with `snapToDetents` for named range stops. Existing components gain opt-in props instead of changing their defaults: `SearchField` accepts `expandOnFocus`, `Tabs` and `Accordion` accept `motion`, `PageHeader` accepts `sticky`, and `PresenceIndicator`/`AvatarGroup` accept activity-pulse props. All use the same Pango tokens and respect `prefers-reduced-motion`.
 
 ## Package entry points
 
 Import Pango styles once from the application boundary, then use the smallest entry point that fits the page.
 
 ```tsx
-import 'pango-design-system/styles.css'
-import { Button, Card, Tooltip } from 'pango-design-system'
-import { Combobox, useForm, z } from 'pango-design-system/forms'
-import { DataTable } from 'pango-design-system/table'
+import "pango-design-system/styles.css";
+import { Button, Card, Tooltip } from "pango-design-system";
+import { Combobox, useForm, z } from "pango-design-system/forms";
+import { DataTable } from "pango-design-system/table";
 ```
 
-| Entry point | Contents |
-| --- | --- |
-| `pango-design-system` | Core controls, feedback, navigation, overlays, cards, workflow controls, and utilities. |
-| `/styles.css` | Fonts, semantic theme tokens, responsive rules, component styles, and reduced-motion defaults. |
-| `/tokens` and `/motion` | Shared control sizes, tone names, timing values, and opt-in Motion exports. |
-| `/forms` | Field composition, file uploader, combobox, multi-select, date controls, number input, TanStack Form, and Zod. |
-| `/phone` | Opt-in, lazy-formatted phone input backed by `libphonenumber-js`. |
-| `/patterns` | Page headers, filters, settings, command palette, list-detail layouts, empty/loading/error states, and responsive navigation. |
-| `/marketing` | Opt-in marketing compositions: navigation, hero, logo cloud, feature sections, pricing, testimonials, CTA, footer, FAQ, and availability grid. |
-| `/workflows` | Opt-in product compositions: application shell, amount field, board, progress card, checklist, scoped access, assistant chat, tour, and editable list. |
-| `/table` and `/virtual` | Semantic tables, TanStack Table adapter, virtual lists, grids, and virtual data table. |
-| `/dnd` | Draggable, droppable, sortable-list, sortable-grid, drag-handle, and drag overlay primitives. |
-| `/charts` and `/hotkeys` | TanStack Chart wrapper, sparklines, legends, product hotkeys, and shortcut-help UI. |
+| Entry point              | Contents                                                                                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pango-design-system`    | Core controls, feedback, navigation, overlays, cards, workflow controls, and utilities.                                                                |
+| `/styles.css`            | Fonts, semantic theme tokens, responsive rules, component styles, and reduced-motion defaults.                                                         |
+| `/tokens` and `/motion`  | Shared control sizes, tone names, timing values, and opt-in Motion exports.                                                                            |
+| `/forms`                 | Field composition, file uploader, combobox, multi-select, date controls, number input, slider detents, TanStack Form, and Zod.                         |
+| `/phone`                 | Opt-in, lazy-formatted phone input backed by `libphonenumber-js`.                                                                                      |
+| `/patterns`              | Page headers, filters, settings, command palette, list-detail layouts, empty/loading/error states, and responsive navigation.                          |
+| `/marketing`             | Opt-in marketing compositions: navigation, hero, logo cloud, feature sections, pricing, testimonials, CTA, footer, FAQ, and availability grid.         |
+| `/workflows`             | Opt-in product compositions: application shell, amount field, board, progress card, checklist, scoped access, assistant chat, tour, and editable list. |
+| `/table` and `/virtual`  | Semantic tables, TanStack Table adapter, virtual lists, grids, and virtual data table.                                                                 |
+| `/dnd`                   | Draggable, droppable, sortable-list, sortable-grid, drag-handle, and drag overlay primitives.                                                          |
+| `/charts` and `/hotkeys` | TanStack Chart wrapper, sparklines, legends, product hotkeys, and shortcut-help UI.                                                                    |
 
 The core entry point does not import tables, charts, forms, virtualisation, hotkeys, marketing, or product-workflow compositions. Drag-and-drop is included by `FilterBuilder` for its conditional reordering; the table, chart, form, virtualisation, hotkey, marketing, and workflow dependencies remain isolated until a consuming page explicitly imports the matching entry point.
 

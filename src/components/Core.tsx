@@ -1,4 +1,11 @@
-import { Check, CircleAlert, LoaderCircle, Minus } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  CircleAlert,
+  LoaderCircle,
+  Minus,
+  X,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type {
   HTMLAttributes,
@@ -326,6 +333,155 @@ export function Skeleton({
       aria-label={label}
       role="status"
     />
+  );
+}
+
+/**
+ * Keeps placeholder and resolved content in the same layout slot. Motion is
+ * opt-in; the non-motion path remains a straightforward conditional render.
+ */
+export function SkeletonSwap({
+  loading,
+  skeleton,
+  children,
+  motion = false,
+  className,
+}: {
+  loading: boolean;
+  skeleton: ReactNode;
+  children: ReactNode;
+  motion?: boolean;
+  className?: string;
+}) {
+  if (!motion) {
+    return (
+      <div
+        className={cx("pango-skeleton-swap", className)}
+        aria-busy={loading || undefined}
+      >
+        {loading ? skeleton : children}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cx(
+        "pango-skeleton-swap",
+        "has-motion",
+        loading && "is-loading",
+        className,
+      )}
+      aria-busy={loading || undefined}
+    >
+      <div aria-hidden={!loading} inert={!loading}>
+        {skeleton}
+      </div>
+      <div aria-hidden={loading} inert={loading}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export type BannerTone = "info" | "success" | "warning" | "danger";
+
+/** A status banner that can fold to its heading or be dismissed entirely. */
+export function CollapsibleBanner({
+  title,
+  children,
+  action,
+  tone = "info",
+  collapsed,
+  defaultCollapsed = false,
+  onCollapsedChange,
+  dismissible = false,
+  onDismiss,
+  motion = false,
+  className,
+}: {
+  title: ReactNode;
+  children?: ReactNode;
+  action?: ReactNode;
+  tone?: BannerTone;
+  collapsed?: boolean;
+  defaultCollapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
+  dismissible?: boolean;
+  onDismiss?: () => void;
+  motion?: boolean;
+  className?: string;
+}) {
+  const [isCollapsed, setCollapsed] = useControllableState({
+    value: collapsed,
+    defaultValue: defaultCollapsed,
+    onChange: onCollapsedChange,
+  });
+  const [visible, setVisible] = useState(true);
+  const contentId = useStableId("collapsible-banner");
+  const hasContent = Boolean(children || action);
+
+  if (!visible) return null;
+  return (
+    <section
+      className={cx(
+        "pango-collapsible-banner",
+        `is-${tone}`,
+        isCollapsed && "is-collapsed",
+        motion && "has-motion",
+        className,
+      )}
+      aria-labelledby={`${contentId}-title`}
+    >
+      <header>
+        <span className="pango-collapsible-banner-icon" aria-hidden="true">
+          <CircleAlert size={16} />
+        </span>
+        <strong id={`${contentId}-title`}>{title}</strong>
+        <div className="pango-collapsible-banner-controls">
+          {hasContent && (
+            <button
+              type="button"
+              aria-expanded={!isCollapsed}
+              aria-controls={contentId}
+              onClick={() => setCollapsed((current) => !current)}
+            >
+              <span className="sr-only">
+                {isCollapsed ? "Expand" : "Collapse"} banner
+              </span>
+              <ChevronDown size={16} aria-hidden="true" />
+            </button>
+          )}
+          {dismissible && (
+            <button
+              type="button"
+              aria-label="Dismiss banner"
+              onClick={() => {
+                setVisible(false);
+                onDismiss?.();
+              }}
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      </header>
+      {hasContent && (
+        <div
+          className="pango-collapsible-banner-content"
+          id={contentId}
+          aria-hidden={isCollapsed}
+          inert={isCollapsed}
+        >
+          <div>
+            {children && <p>{children}</p>}
+            {action && (
+              <span className="pango-collapsible-banner-action">{action}</span>
+            )}
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 

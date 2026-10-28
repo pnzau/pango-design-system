@@ -8,16 +8,26 @@ import {
 } from "./FilterBuilder";
 
 const fields: readonly FilterField[] = [
-  { id: "status", label: "Status", type: "select", options: [
-    { value: "open", label: "Open" },
-    { value: "in_progress", label: "In progress" },
-    { value: "closed", label: "Closed" },
-  ] },
+  {
+    id: "status",
+    label: "Status",
+    type: "select",
+    options: [
+      { value: "open", label: "Open" },
+      { value: "in_progress", label: "In progress" },
+      { value: "closed", label: "Closed" },
+    ],
+  },
   { id: "owner", label: "Owner", type: "text" },
-  { id: "priority", label: "Priority", type: "select", options: [
-    { value: "high", label: "High" },
-    { value: "normal", label: "Normal" },
-  ] },
+  {
+    id: "priority",
+    label: "Priority",
+    type: "select",
+    options: [
+      { value: "high", label: "High" },
+      { value: "normal", label: "Normal" },
+    ],
+  },
   { id: "created", label: "Created", type: "date" },
 ];
 
@@ -35,8 +45,18 @@ const groupedFilters: readonly FilterCondition[] = [
     id: "priority-owner-and",
     type: "and",
     rules: [
-      { id: "priority-filter", field: "priority", operator: "is", value: "high" },
-      { id: "owner-filter", field: "owner", operator: "contains", value: "Amina" },
+      {
+        id: "priority-filter",
+        field: "priority",
+        operator: "is",
+        value: "high",
+      },
+      {
+        id: "owner-filter",
+        field: "owner",
+        operator: "contains",
+        value: "Amina",
+      },
     ],
   },
 ];
@@ -55,8 +75,10 @@ type Story = StoryObj<typeof meta>;
 
 export const SavedViews: Story = {
   render: function SavedViewsStory(args) {
-    const [filters, setFilters] = useState<readonly FilterCondition[]>(initialFilters);
-    const [views, setViews] = useState<readonly SavedFilterView[]>(initialViews);
+    const [filters, setFilters] =
+      useState<readonly FilterCondition[]>(initialFilters);
+    const [views, setViews] =
+      useState<readonly SavedFilterView[]>(initialViews);
 
     return (
       <FilterBuilder
@@ -65,7 +87,9 @@ export const SavedViews: Story = {
         savedViews={views}
         onChange={setFilters}
         onSaveView={(view) => setViews((current) => [...current, view])}
-        onDeleteView={(view) => setViews((current) => current.filter((item) => item.id !== view.id))}
+        onDeleteView={(view) =>
+          setViews((current) => current.filter((item) => item.id !== view.id))
+        }
       />
     );
   },

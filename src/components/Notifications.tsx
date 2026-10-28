@@ -45,6 +45,7 @@ export function NotificationCenter({
   onDismiss,
   label = "Notifications",
   emptyState = "You’re all caught up.",
+  motion = true,
   className,
 }: {
   items: readonly NotificationItem[];
@@ -56,6 +57,7 @@ export function NotificationCenter({
   onDismiss?: (item: NotificationItem) => void;
   label?: string;
   emptyState?: ReactNode;
+  motion?: boolean;
   className?: string;
 }) {
   const [isOpen, setIsOpen] = useControllableState({
@@ -65,6 +67,8 @@ export function NotificationCenter({
   });
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLSpanElement>(null);
+  const closeTimerRef = useRef<number | undefined>(undefined);
+  const [panelMounted, setPanelMounted] = useState(false);
   const [panelPosition, setPanelPosition] = useState<
     { top: number; left: number; width: number } | undefined
   >();
@@ -75,11 +79,23 @@ export function NotificationCenter({
   useEscapeKey(isOpen, () => setIsOpen(false));
 
   useEffect(() => {
+    window.clearTimeout(closeTimerRef.current);
     if (!isOpen) {
-      setPanelPosition(undefined);
-      return;
+      if (!panelPosition) {
+        setPanelMounted(false);
+        return undefined;
+      }
+      closeTimerRef.current = window.setTimeout(
+        () => {
+          setPanelMounted(false);
+          setPanelPosition(undefined);
+        },
+        motion ? 220 : 0,
+      );
+      return () => window.clearTimeout(closeTimerRef.current);
     }
 
+    setPanelMounted(true);
     const updatePanelPosition = () => {
       const trigger = triggerRef.current;
       if (!trigger) return;
@@ -94,7 +110,10 @@ export function NotificationCenter({
         window.innerWidth - panelWidth - viewportPadding,
       );
       const left = Math.min(
-        Math.max(viewportPadding, trigger.getBoundingClientRect().right - panelWidth),
+        Math.max(
+          viewportPadding,
+          trigger.getBoundingClientRect().right - panelWidth,
+        ),
         maxLeft,
       );
 
@@ -111,15 +130,24 @@ export function NotificationCenter({
     return () => {
       window.removeEventListener("resize", updatePanelPosition);
       window.removeEventListener("scroll", updatePanelPosition, true);
+      window.clearTimeout(closeTimerRef.current);
     };
-  }, [isOpen]);
+  }, [isOpen, motion]);
 
   const markRead = (item: NotificationItem) => {
     if (!item.read) onRead?.(item);
   };
 
   return (
-    <div className={cx("pango-notification-center", className)} ref={rootRef}>
+    <div
+      className={cx(
+        "pango-notification-center",
+        isOpen && "is-open",
+        motion && "has-motion",
+        className,
+      )}
+      ref={rootRef}
+    >
       <span className="pango-notification-trigger-wrap" ref={triggerRef}>
         <IconButton
           label={label}
@@ -131,17 +159,22 @@ export function NotificationCenter({
           <Bell size={17} aria-hidden="true" />
         </IconButton>
         {unreadCount > 0 && (
-          <span className="pango-notification-count" aria-label={`${unreadCount} unread`}>
+          <span
+            className="pango-notification-count"
+            aria-label={`${unreadCount} unread`}
+          >
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </span>
-      {isOpen && panelPosition && (
+      {panelMounted && panelPosition && (
         <section
-          className="pango-notification-panel"
+          className={cx("pango-notification-panel", isOpen && "is-open")}
           id={panelId}
           role="dialog"
           aria-label={label}
+          aria-hidden={!isOpen}
+          inert={!isOpen}
           style={panelPosition}
         >
           <header className="pango-notification-header">

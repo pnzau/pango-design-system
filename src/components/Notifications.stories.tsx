@@ -65,15 +65,21 @@ export const ActionableInbox: Story = {
           onRead={(item) =>
             setItems((current) =>
               current.map((candidate) =>
-                candidate.id === item.id ? { ...candidate, read: true } : candidate,
+                candidate.id === item.id
+                  ? { ...candidate, read: true }
+                  : candidate,
               ),
             )
           }
           onReadAll={() =>
-            setItems((current) => current.map((item) => ({ ...item, read: true })))
+            setItems((current) =>
+              current.map((item) => ({ ...item, read: true })),
+            )
           }
           onDismiss={(item) =>
-            setItems((current) => current.filter((candidate) => candidate.id !== item.id))
+            setItems((current) =>
+              current.filter((candidate) => candidate.id !== item.id),
+            )
           }
         />
         <small>{lastAction}</small>

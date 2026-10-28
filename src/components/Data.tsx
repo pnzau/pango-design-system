@@ -132,13 +132,15 @@ export function Stepper({
   steps,
   current,
   onStepChange,
+  motion = true,
 }: {
   steps: readonly { label: ReactNode; description?: ReactNode }[];
   current: number;
   onStepChange?: (step: number) => void;
+  motion?: boolean;
 }) {
   return (
-    <ol className="pango-stepper">
+    <ol className={cx("pango-stepper", motion && "has-motion")}>
       {steps.map((step, index) => {
         const state =
           index < current
