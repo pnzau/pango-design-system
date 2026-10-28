@@ -467,6 +467,7 @@ type SelectProps = Omit<
   onValueChange?: (value: string) => void;
   options?: readonly SelectMenuOption[];
   placeholder?: ReactNode;
+  triggerContent?: ReactNode;
   value?: string;
 };
 
@@ -485,6 +486,7 @@ export function Select({
   onValueChange,
   options,
   placeholder = "Select an option",
+  triggerContent,
   value,
   ...props
 }: SelectProps) {
@@ -605,7 +607,7 @@ export function Select({
           onKeyDown={handleKeyDown}
           {...props}
         >
-          <span>{selectedOption?.label ?? placeholder}</span>
+          <span>{triggerContent ?? selectedOption?.label ?? placeholder}</span>
           <ChevronDown size={15} aria-hidden="true" />
         </button>
         {open && (

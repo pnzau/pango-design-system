@@ -31,6 +31,7 @@ import {
   Badge,
   Button,
   IconButton,
+  Select,
   StatusChip,
 } from "./components/Primitives";
 import { CodeBlock } from "./components/CodeBlock";
@@ -97,6 +98,11 @@ const paletteOptions: Array<{
   { name: "vermilion", label: "Warm vermilion", value: "#e4684b" },
 ];
 
+const paletteSelectOptions = paletteOptions.map(({ name, label }) => ({
+  value: name,
+  label,
+}));
+
 function readPathname() {
   const pathname = window.location.pathname.replace(/\/$/, "");
   return pathname || "/";
@@ -114,6 +120,9 @@ function App() {
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const page = findDocumentation(pathname);
+  const selectedPalette =
+    paletteOptions.find((option) => option.name === palette) ??
+    paletteOptions[0];
 
   const navigate = useCallback((destination: string) => {
     const target = new URL(destination, window.location.origin);
@@ -332,26 +341,30 @@ function App() {
               </SearchMenu.Content>
             </SearchMenu>
             <div className="docs-palette">
-              <span
-                style={{
-                  background: paletteOptions.find(
-                    (item) => item.name === palette,
-                  )?.value,
-                }}
-              />
-              <select
+              <Select
                 aria-label="Choose accent palette"
                 value={palette}
-                onChange={(event) =>
-                  setPalette(event.target.value as PaletteName)
+                onValueChange={(value) => setPalette(value as PaletteName)}
+                options={paletteSelectOptions}
+                title={selectedPalette.label}
+                triggerContent={
+                  <>
+                    <span
+                      className="docs-palette-swatch"
+                      style={{ background: selectedPalette.value }}
+                    />
+                    <span className="docs-palette-label">
+                      {selectedPalette.label}
+                    </span>
+                    <Palette
+                      className="docs-palette-icon"
+                      size={17}
+                      color={selectedPalette.value}
+                      aria-hidden="true"
+                    />
+                  </>
                 }
-              >
-                {paletteOptions.map((option) => (
-                  <option value={option.name} key={option.name}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
             <IconButton
               label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
