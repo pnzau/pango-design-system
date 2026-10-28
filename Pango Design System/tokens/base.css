@@ -1,9 +1,0 @@
-/* Pango base layer — reset, scrollbar and link colors. Every value reads a
-   semantic token, so switching data-theme="dark" on <html> switches the page. */
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--surface-app);color:var(--text-body);font-family:var(--font-body);font-size:var(--fs-14)}
-input,button,textarea,select{font-family:inherit}
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px;border:2px solid var(--surface-app)}
-a{color:var(--accent);text-decoration:none;font-weight:var(--fw-bold)}
-a:hover{filter:brightness(1.08);text-decoration:none}
