@@ -601,8 +601,8 @@ export function AssistantChat({
           aria-label="Send message"
           loading={sending}
           disabled={!draft.trim()}
+          icon={<Send size={15} aria-hidden="true" />}
         >
-          <Send size={15} aria-hidden="true" />
           Send
         </Button>
       </form>
