@@ -5171,12 +5171,13 @@ h1 {
   font-weight: 800;
 }
 .docs-on-this-page a {
+  position: relative;
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr) 4px;
   align-items: center;
   gap: 7px;
   min-height: 28px;
-  padding: 0 8px;
+  padding: 0 8px 0 4px;
   color: var(--text-muted);
   font-size: 10px;
   line-height: 1.35;
@@ -5194,7 +5195,17 @@ h1 {
   color: var(--accent-ink);
   background: var(--accent-wash);
   font-weight: 700;
-  box-shadow: inset 2px 0 var(--accent);
+}
+.docs-on-this-page a.is-active::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 2px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 999px;
+  content: "";
+  transform: translateY(-50%);
 }
 .docs-bookmark-icon {
   display: grid;
@@ -5833,7 +5844,7 @@ h1 {
     backdrop-filter: blur(10px);
     scrollbar-width: thin;
   }
-  .docs-on-this-page.is-at-top {
+  .docs-on-this-page.is-topic-at-top {
     padding: 10px 11px 11px;
     border: 0;
     border-radius: 0;

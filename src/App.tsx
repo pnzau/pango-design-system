@@ -691,10 +691,11 @@ function DocumentationGuide({ navigate }: { navigate: (to: string) => void }) {
   const [activeTopicId, setActiveTopicId] = useState(() =>
     getDocumentationTopicId(window.location.hash),
   );
-  const [isPageAtTop, setIsPageAtTop] = useState(() => window.scrollY <= 4);
+  const [isTopicAtTop, setIsTopicAtTop] = useState(false);
 
   useEffect(() => {
     let animationFrame = 0;
+    let topicObserver: IntersectionObserver | null = null;
     const updateActiveTopic = () => {
       if (animationFrame) cancelAnimationFrame(animationFrame);
       animationFrame = window.requestAnimationFrame(() => {
@@ -708,28 +709,56 @@ function DocumentationGuide({ navigate }: { navigate: (to: string) => void }) {
           },
           documentationTopics[0]?.id ?? "",
         );
-        const nextIsPageAtTop = window.scrollY <= 4;
         setActiveTopicId((currentTopicId) =>
           currentTopicId === nextTopicId ? currentTopicId : nextTopicId,
-        );
-        setIsPageAtTop((currentIsPageAtTop) =>
-          currentIsPageAtTop === nextIsPageAtTop
-            ? currentIsPageAtTop
-            : nextIsPageAtTop,
         );
         animationFrame = 0;
       });
     };
+    const observeTopicBoundary = () => {
+      topicObserver?.disconnect();
+      const bookmarkNav =
+        document.querySelector<HTMLElement>(".docs-on-this-page");
+      const pageLayout =
+        document.querySelector<HTMLElement>(".docs-page-layout");
+      if (!bookmarkNav) return;
+
+      const stickyOffset =
+        Number.parseFloat(getComputedStyle(bookmarkNav).top) || 0;
+      const topicAllowance = pageLayout
+        ? Number.parseFloat(getComputedStyle(pageLayout).rowGap) || 0
+        : 0;
+      const threshold = stickyOffset + topicAllowance;
+      const thresholdBandHeight = 1;
+      const bottomMargin = Math.max(
+        0,
+        window.innerHeight - threshold - thresholdBandHeight,
+      );
+
+      // Collapse the observer root to a 1px band at the navbar plus spacing.
+      topicObserver = new IntersectionObserver(
+        ([entry]) => setIsTopicAtTop(entry?.isIntersecting ?? false),
+        {
+          rootMargin: `-${threshold}px 0px -${bottomMargin}px 0px`,
+          threshold: 0,
+        },
+      );
+      topicObserver.observe(bookmarkNav);
+    };
 
     window.addEventListener("scroll", updateActiveTopic, { passive: true });
     window.addEventListener("resize", updateActiveTopic);
+    window.addEventListener("resize", observeTopicBoundary);
     window.addEventListener("hashchange", updateActiveTopic);
     updateActiveTopic();
+    observeTopicBoundary();
     return () => {
       window.removeEventListener("scroll", updateActiveTopic);
       window.removeEventListener("resize", updateActiveTopic);
+      window.removeEventListener("resize", observeTopicBoundary);
       window.removeEventListener("hashchange", updateActiveTopic);
       if (animationFrame) cancelAnimationFrame(animationFrame);
+      topicObserver?.disconnect();
     };
   }, []);
 
@@ -751,7 +780,7 @@ function DocumentationGuide({ navigate }: { navigate: (to: string) => void }) {
       <DocumentationDetails page={documentationGuide} />
       <div className="docs-page-layout">
         <aside
-          className={`docs-on-this-page ${isPageAtTop ? "is-at-top" : ""}`}
+          className={`docs-on-this-page ${isTopicAtTop ? "is-topic-at-top" : ""}`}
           aria-label="On this page"
         >
           <span>Topics</span>
