@@ -49,7 +49,7 @@ A Git tag is a permanent name for a specific commit. It lets consumers install t
 Consumers can install that release with:
 
 ```sh
-npm install github:pnzau/cheza_ui#v0.1.0
+npm install github:pnzau/pango-design-system#v0.1.0
 ```
 
 The repository must be public, or the consumer must have GitHub access to it.
@@ -78,7 +78,7 @@ major   0.1.0 -> 1.0.0   breaking API changes
 Install a later release by replacing the tag:
 
 ```sh
-npm install github:pnzau/cheza_ui#v0.1.1
+npm install github:pnzau/pango-design-system#v0.1.1
 ```
 
 Do not run a separate `git tag` after `npm version`; `npm version` already creates the tag.
@@ -93,7 +93,7 @@ Change the package metadata to something like:
 {
   "name": "@pnzau/pango-design-system",
   "private": false,
-  "repository": "https://github.com/pnzau/cheza_ui",
+  "repository": "https://github.com/pnzau/pango-design-system",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   }
