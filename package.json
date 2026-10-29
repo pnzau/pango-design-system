@@ -1,6 +1,7 @@
 {
   "name": "pango-design-system",
-  "private": true,
+  "private": false,
+  "repository": "https://github.com/pnzau/pango-design-system.git",
   "version": "0.1.0",
   "type": "module",
   "files": [
