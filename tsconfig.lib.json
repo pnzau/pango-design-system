@@ -20,6 +20,8 @@
     "src/dnd.tsx",
     "src/charts.tsx",
     "src/hotkeys.tsx",
-    "src/motion.ts"
+    "src/motion.ts",
+    "src/marketing.ts",
+    "src/workflows.ts"
   ]
 }
