@@ -2,7 +2,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  GripVertical,
   Pencil,
   Plus,
   Send,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { DragHandle, SortableList } from "../dnd";
 import { cx, useControllableState } from "../lib/utils";
 import { Checkbox, Card } from "./Core";
 import { Money, Progress } from "./Data";
@@ -731,6 +731,7 @@ export function EditableList({
   onAdd,
   onEdit,
   onRemove,
+  onReorder,
   addLabel = "Add item",
   className,
 }: {
@@ -739,9 +740,51 @@ export function EditableList({
   onAdd?: () => void;
   onEdit?: (item: EditableListItem) => void;
   onRemove?: (item: EditableListItem) => void;
+  onReorder?: (items: EditableListItem[]) => void;
   addLabel?: ReactNode;
   className?: string;
 }) {
+  const renderItem = (item: EditableListItem) => (
+    <>
+      {onReorder && (
+        <DragHandle
+          className="pango-editable-list-grip"
+          label={`Reorder ${String(item.title)}`}
+        />
+      )}
+      {item.leading && (
+        <span className="pango-editable-list-leading">{item.leading}</span>
+      )}
+      <span className="pango-editable-list-copy">
+        <strong>{item.title}</strong>
+        {item.description && <small>{item.description}</small>}
+      </span>
+      {item.trailing && <span>{item.trailing}</span>}
+      {onEdit && (
+        <IconButton
+          label={`Edit ${String(item.title)}`}
+          size="sm"
+          tone="soft"
+          disabled={item.disabled}
+          onClick={() => onEdit(item)}
+        >
+          <Pencil size={13} aria-hidden="true" />
+        </IconButton>
+      )}
+      {onRemove && (
+        <IconButton
+          label={`Remove ${String(item.title)}`}
+          size="sm"
+          tone="soft"
+          disabled={item.disabled}
+          onClick={() => onRemove(item)}
+        >
+          <X size={13} aria-hidden="true" />
+        </IconButton>
+      )}
+    </>
+  );
+
   return (
     <section className={cx("pango-editable-list", className)}>
       {(label || onAdd) && (
@@ -759,47 +802,22 @@ export function EditableList({
           )}
         </header>
       )}
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            <div className="pango-editable-list-grip" aria-hidden="true">
-              <GripVertical size={15} />
-            </div>
-            {item.leading && (
-              <span className="pango-editable-list-leading">
-                {item.leading}
-              </span>
-            )}
-            <span className="pango-editable-list-copy">
-              <strong>{item.title}</strong>
-              {item.description && <small>{item.description}</small>}
-            </span>
-            {item.trailing && <span>{item.trailing}</span>}
-            {onEdit && (
-              <IconButton
-                label={`Edit ${String(item.title)}`}
-                size="sm"
-                tone="soft"
-                disabled={item.disabled}
-                onClick={() => onEdit(item)}
-              >
-                <Pencil size={13} aria-hidden="true" />
-              </IconButton>
-            )}
-            {onRemove && (
-              <IconButton
-                label={`Remove ${String(item.title)}`}
-                size="sm"
-                tone="soft"
-                disabled={item.disabled}
-                onClick={() => onRemove(item)}
-              >
-                <X size={13} aria-hidden="true" />
-              </IconButton>
-            )}
-          </li>
-        ))}
-      </ul>
+      {onReorder ? (
+        <SortableList
+          as="ul"
+          itemAs="li"
+          items={items}
+          getId={(item) => item.id}
+          onReorder={onReorder}
+          renderItem={renderItem}
+        />
+      ) : (
+        <ul>
+          {items.map((item) => (
+            <li key={item.id}>{renderItem(item)}</li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

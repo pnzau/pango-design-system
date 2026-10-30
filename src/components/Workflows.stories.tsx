@@ -14,6 +14,7 @@ import {
   AssistantChat,
   Checklist,
   EditableList,
+  type EditableListItem,
   GuidedTour,
   KanbanBoard,
   ProgressCard,
@@ -265,32 +266,37 @@ export const AssistantAndTour: Story = {
 };
 
 export const EditableSettingsList: Story = {
-  render: () => (
-    <EditableList
-      label="Categories"
-      onAdd={() => undefined}
-      onEdit={() => undefined}
-      onRemove={() => undefined}
-      items={[
-        {
-          id: "home",
-          title: "Home",
-          description: "Rent, utilities, repairs",
-          leading: <span className="pango-story-category-dot is-home" />,
-        },
-        {
-          id: "food",
-          title: "Food",
-          description: "Groceries and restaurants",
-          leading: <span className="pango-story-category-dot is-food" />,
-        },
-        {
-          id: "travel",
-          title: "Travel",
-          description: "Fuel and transport",
-          leading: <span className="pango-story-category-dot is-travel" />,
-        },
-      ]}
-    />
-  ),
+  render: function EditableSettingsListStory() {
+    const [items, setItems] = useState<EditableListItem[]>([
+      {
+        id: "home",
+        title: "Home",
+        description: "Rent, utilities, repairs",
+        leading: <span className="pango-story-category-dot is-home" />,
+      },
+      {
+        id: "food",
+        title: "Food",
+        description: "Groceries and restaurants",
+        leading: <span className="pango-story-category-dot is-food" />,
+      },
+      {
+        id: "travel",
+        title: "Travel",
+        description: "Fuel and transport",
+        leading: <span className="pango-story-category-dot is-travel" />,
+      },
+    ]);
+
+    return (
+      <EditableList
+        label="Categories"
+        onAdd={() => undefined}
+        onEdit={() => undefined}
+        onRemove={() => undefined}
+        onReorder={setItems}
+        items={items}
+      />
+    );
+  },
 };
