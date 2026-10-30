@@ -9042,6 +9042,7 @@ button.pango-kanban-card:hover {
 }
 .pango-editable-list > ul {
   display: grid;
+  gap: 0;
   padding: 0;
   margin: 0;
   list-style: none;

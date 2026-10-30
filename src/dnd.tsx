@@ -99,6 +99,8 @@ export function SortableList<T>({
   renderItem,
   className,
   overlay,
+  as: Container = "div",
+  itemAs = "div",
 }: {
   items: readonly T[];
   getId: (item: T) => string | number;
@@ -106,6 +108,8 @@ export function SortableList<T>({
   renderItem: (item: T, index: number) => ReactNode;
   className?: string;
   overlay?: (item: T) => ReactNode;
+  as?: "div" | "ol" | "ul";
+  itemAs?: "div" | "li";
 }) {
   const [activeId, setActiveId] = useState<string | number | null>(null);
   const activeItem =
@@ -134,13 +138,18 @@ export function SortableList<T>({
         if (from >= 0 && to >= 0) onReorder(arrayMove([...items], from, to));
       }}
     >
-      <div className={cx("pango-sortable-list", className)}>
+      <Container className={cx("pango-sortable-list", className)}>
         {items.map((item, index) => (
-          <SortableItem key={getId(item)} id={getId(item)} index={index}>
+          <SortableItem
+            key={getId(item)}
+            id={getId(item)}
+            index={index}
+            as={itemAs}
+          >
             {renderItem(item, index)}
           </SortableItem>
         ))}
-      </div>
+      </Container>
       {overlay && (
         <DragOverlay>{activeItem ? overlay(activeItem) : null}</DragOverlay>
       )}
@@ -165,10 +174,12 @@ function SortableItem({
   id,
   index,
   children,
+  as: Item = "div",
 }: {
   id: string | number;
   index: number;
   children: ReactNode;
+  as?: "div" | "li";
 }) {
   const { ref, handleRef, isDragging, isDropTarget } = useSortable({
     id,
@@ -176,8 +187,8 @@ function SortableItem({
   });
   return (
     <DragHandleContext.Provider value={{ handleRef }}>
-      <div
-        ref={(element) => ref(element)}
+      <Item
+        ref={(element: Element | null) => ref(element)}
         className={cx(
           "pango-sortable-item",
           isDragging && "is-dragging",
@@ -185,7 +196,7 @@ function SortableItem({
         )}
       >
         {children}
-      </div>
+      </Item>
     </DragHandleContext.Provider>
   );
 }
