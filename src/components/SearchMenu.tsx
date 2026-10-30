@@ -188,6 +188,7 @@ export const SearchMenuInput = forwardRef<
           {...props}
           ref={setInputRef}
           id={context.inputId}
+          aria-label={props["aria-label"] ?? placeholder}
           value={context.query}
           type="search"
           role="combobox"

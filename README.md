@@ -88,6 +88,7 @@ Storybook 9 is used instead of the initially requested Storybook 8 because this 
 The following commands pass in this workspace:
 
 ```text
+npm test
 npm run build
 npm run build:library
 npm run build-storybook

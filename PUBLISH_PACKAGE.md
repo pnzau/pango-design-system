@@ -19,6 +19,7 @@ The `prepack` script builds the package before npm creates its tarball. npm also
 Run these commands on the feature branch before opening or merging the pull request, and again after meaningful package changes:
 
 ```sh
+npm test
 npm run build:library
 npm pack --dry-run
 ```
