@@ -1,6 +1,8 @@
 # Publish the package
 
-This repository can be installed directly from GitHub, but it needs a small packaging fix first.
+This repository can be installed directly from GitHub. Releases are identified by Git tags, so the tag must point to the commit that is on `main`.
+
+Run package checks on a feature branch, but create and push release versions only after the change has been merged into `main`. Merging by itself does not create a release.
 
 ## Current status
 
@@ -14,7 +16,7 @@ The `prepack` script builds the package before npm creates its tarball. npm also
 
 ## Verify the package
 
-Run these commands before the first release and after meaningful package changes:
+Run these commands on the feature branch before opening or merging the pull request, and again after meaningful package changes:
 
 ```sh
 npm run build:library
@@ -44,7 +46,7 @@ git tag -a v0.1.0 -m "Release v0.1.0"
 git push origin v0.1.0
 ```
 
-A Git tag is a permanent name for a specific commit. It lets consumers install the exact source snapshot used for a release instead of whatever happens to be on the current branch.
+A Git tag is a permanent name for a specific commit. It lets consumers install the exact source snapshot used for a release instead of whatever happens to be on a branch. If release automation is configured to run from tags, pushing the tag starts that automation.
 
 Consumers can install that release with:
 
@@ -56,16 +58,18 @@ The repository must be public, or the consumer must have GitHub access to it.
 
 ## Later releases
 
-After adding library changes:
+After adding library changes, run the build checks on the feature branch. Once the changes are merged, create the release from the updated `main` branch:
 
 ```sh
-npm run build:library
-npm pack --dry-run
+git switch main
+git pull --ff-only origin main
 npm version patch
 git push origin main --follow-tags
 ```
 
-`npm version patch` updates `package.json` and `package-lock.json`, creates a release commit, and creates the matching Git tag. The tag is pushed by `--follow-tags`.
+`npm version patch` updates `package.json` and `package-lock.json`, creates a release commit, and creates the matching annotated Git tag. The tag is pushed by `--follow-tags`.
+
+Do not run `npm version` or push its tag from a feature branch. The version commit and tag could then exist before the change reaches `main`, and the later merge will not create another tag. Also, `git push origin main --follow-tags` only pushes tags reachable from the `main` commit being pushed.
 
 Use the version increment that matches the change:
 
@@ -81,7 +85,7 @@ Install a later release by replacing the tag:
 npm install github:pnzau/pango-design-system#v0.1.1
 ```
 
-Do not run a separate `git tag` after `npm version`; `npm version` already creates the tag.
+Do not run a separate `git tag` after `npm version`; `npm version` already creates the tag. For a later release, use the next version from the current package version.
 
 ## Optional: GitHub Packages
 
